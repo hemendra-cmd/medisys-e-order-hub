@@ -1,14 +1,18 @@
 import { Link } from "@tanstack/react-router";
+import logoAsset from "@/assets/medisys-logo.png.asset.json";
 
-export function Logo({ className = "" }: { className?: string }) {
+export function Logo({ className = "", size = 36 }: { className?: string; size?: number }) {
   return (
-    <Link to="/" className={`inline-flex items-center gap-2 font-display ${className}`}>
-      <span className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-primary text-primary-foreground shadow-card">
-        <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M12 4v16M4 12h16" />
-        </svg>
-      </span>
-      <span className="text-lg font-semibold tracking-tight">
+    <Link to="/" className={`inline-flex items-center gap-2.5 ${className}`} aria-label="Medisys home">
+      <img
+        src={logoAsset.url}
+        alt="Medisys"
+        width={size}
+        height={size}
+        className="rounded-md object-cover shadow-card"
+        style={{ width: size, height: size }}
+      />
+      <span className="font-display text-lg font-semibold tracking-tight">
         Medi<span className="text-primary">sys</span>
       </span>
     </Link>

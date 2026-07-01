@@ -4,6 +4,7 @@ import { Logo } from "@/components/site/Logo";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { actions } from "@/lib/store";
 import { ShieldCheck, Truck, BadgeCheck, HeartPulse } from "lucide-react";
+import bannerAsset from "@/assets/medisys-banner.png.asset.json";
 
 export const Route = createFileRoute("/")({
   component: Landing,
@@ -30,7 +31,7 @@ function Landing() {
         <div className="mx-auto grid max-w-6xl gap-10 px-4 py-14 md:grid-cols-2 md:py-20">
           <div className="flex flex-col justify-center">
             <span className="inline-flex w-fit items-center gap-2 rounded-full border bg-accent px-3 py-1 text-xs font-medium text-accent-foreground">
-              <HeartPulse className="h-3.5 w-3.5" /> Trusted B2B ordering portal
+              <HeartPulse className="h-3.5 w-3.5" /> Celebrating 17 years of trust
             </span>
             <h1 className="mt-4 font-display text-4xl font-semibold leading-tight md:text-5xl">
               Welcome to <span className="text-primary">Medisys</span>
@@ -52,7 +53,16 @@ function Landing() {
         </div>
       </section>
 
-      <section id="about" className="border-t bg-muted/40">
+      <section aria-label="Medisys banner" className="border-y">
+        <img
+          src={bannerAsset.url}
+          alt="Medisys — Celebrating 17 years of trust"
+          className="h-auto w-full object-cover"
+          loading="lazy"
+        />
+      </section>
+
+      <section id="about" className="bg-muted/40">
         <div className="mx-auto max-w-6xl px-4 py-14">
           <h2 className="font-display text-2xl font-semibold md:text-3xl">About Medisys</h2>
           <p className="mt-3 max-w-3xl text-muted-foreground">
