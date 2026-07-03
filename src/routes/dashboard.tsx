@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { DashboardHeader } from "@/components/site/DashboardHeader";
-import { DueBar } from "@/components/site/DueBar";
+
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { actions, useStore, type Category, type Product } from "@/lib/store";
 import { Minus, Plus, Tag } from "lucide-react";
