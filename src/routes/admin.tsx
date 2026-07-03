@@ -58,7 +58,7 @@ function AdminPage() {
                 <th className="p-3">Name</th>
                 <th className="p-3">Category</th>
                 <th className="p-3">Pack</th>
-                <th className="p-3 text-right">MRP</th>
+                <th className="p-3">Offer</th>
                 <th className="p-3">Offer</th>
                 <th className="p-3"></th>
               </tr>
