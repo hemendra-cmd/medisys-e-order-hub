@@ -119,8 +119,8 @@ function ProductDialog({
           <div className="col-span-2">
             <Input label="Product name" value={p.name} onChange={(v) => setP({ ...p, name: v })} />
           </div>
-          <Input label="MRP (₹)" type="number" value={String(p.mrp)} onChange={(v) => setP({ ...p, mrp: Number(v) || 0 })} />
           <label className="block">
+
             <span className="mb-1 block text-xs font-medium text-muted-foreground">Category</span>
             <select
               value={p.category}
