@@ -85,7 +85,7 @@ function AdminPage() {
                 </tr>
               ))}
               {products.length === 0 && (
-                <tr><td colSpan={7} className="p-6 text-center text-muted-foreground">No products yet.</td></tr>
+                <tr><td colSpan={6} className="p-6 text-center text-muted-foreground">No products yet.</td></tr>
               )}
             </tbody>
           </table>
