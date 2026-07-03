@@ -1,8 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { DashboardHeader } from "@/components/site/DashboardHeader";
-import { DueBar } from "@/components/site/DueBar";
 import { SiteFooter } from "@/components/site/SiteFooter";
-import { actions, selectors, useStore } from "@/lib/store";
+import { actions, useStore } from "@/lib/store";
 import { Trash2, ArrowLeft } from "lucide-react";
 import { QtyControl } from "./dashboard";
 
@@ -13,16 +12,17 @@ export const Route = createFileRoute("/cart")({
 function CartPage() {
   const cart = useStore((s) => s.cart);
   const products = useStore((s) => s.products);
-  const total = useStore(selectors.cartTotal);
   const navigate = useNavigate();
 
   const items = cart
     .map((c) => ({ ...c, product: products.find((p) => p.id === c.productId)! }))
     .filter((i) => i.product);
 
+  const totalItems = items.reduce((n, i) => n + i.quantity, 0);
+  const uniqueLines = items.length;
+
   return (
     <div className="min-h-screen bg-background">
-      <DueBar />
       <DashboardHeader />
 
       <div className="mx-auto max-w-6xl px-4 py-8">
@@ -55,10 +55,8 @@ function CartPage() {
                     <div className="mt-auto flex items-end justify-between pt-2">
                       <QtyControl id={i.productId} qty={i.quantity} />
                       <div className="text-right">
-                        <div className="text-[10px] uppercase text-muted-foreground">Item total</div>
-                        <div className="font-display text-lg font-semibold">
-                          ₹{(i.product.mrp * i.quantity).toLocaleString("en-IN")}
-                        </div>
+                        <div className="text-[10px] uppercase text-muted-foreground">Quantity</div>
+                        <div className="font-display text-lg font-semibold">{i.quantity}</div>
                       </div>
                     </div>
                   </div>
@@ -77,24 +75,23 @@ function CartPage() {
               <h3 className="font-display text-lg font-semibold">Order summary</h3>
               <dl className="mt-4 space-y-2 text-sm">
                 <div className="flex justify-between text-muted-foreground">
-                  <dt>Items</dt>
-                  <dd>{items.reduce((n, i) => n + i.quantity, 0)}</dd>
-                </div>
-                <div className="flex justify-between text-muted-foreground">
-                  <dt>Subtotal</dt>
-                  <dd>₹{total.toLocaleString("en-IN")}</dd>
+                  <dt>Products</dt>
+                  <dd>{uniqueLines}</dd>
                 </div>
                 <div className="mt-3 flex justify-between border-t pt-3 text-base font-semibold">
-                  <dt>Total</dt>
-                  <dd className="text-primary">₹{total.toLocaleString("en-IN")}</dd>
+                  <dt>Total items</dt>
+                  <dd className="text-primary">{totalItems}</dd>
                 </div>
               </dl>
               <button
                 onClick={() => navigate({ to: "/payment" })}
                 className="mt-5 h-11 w-full rounded-md bg-primary font-semibold text-primary-foreground hover:bg-primary-hover"
               >
-                Proceed to payment
+                Place order
               </button>
+              <p className="mt-3 text-xs text-muted-foreground">
+                Payment is handled separately by our team after order confirmation.
+              </p>
             </aside>
           </div>
         )}
