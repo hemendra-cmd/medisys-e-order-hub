@@ -49,7 +49,7 @@ function Dashboard() {
 
   return (
     <div className="min-h-screen bg-background pb-16">
-      <DueBar />
+
       <DashboardHeader query={query} onQueryChange={setQuery} />
 
       <div className="border-b bg-background">
