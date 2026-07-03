@@ -73,13 +73,13 @@ function Landing() {
           </p>
           <div className="mt-8 grid gap-4 md:grid-cols-3">
             {[
-              { t: "1,200+", s: "labs served" },
-              { t: "5,000+", s: "SKUs in catalogue" },
-              { t: "24 hrs", s: "average dispatch" },
+              { t: "500+", s: "labs served" },
+              { t: "2,500+", s: "products" },
+              { t: "same day delivery", s: "\n" },
             ].map((x) => (
-              <div key={x.s} className="rounded-lg border bg-card p-5 shadow-card">
-                <div className="font-display text-3xl font-semibold text-primary">{x.t}</div>
-                <div className="mt-1 text-sm text-muted-foreground">{x.s}</div>
+              <div key={x.t} className="rounded-lg border bg-card p-5 shadow-card">
+                <div className="font-display text-3xl font-semibold text-primary whitespace-pre-line">{x.t}</div>
+                <div className="mt-1 text-sm text-muted-foreground whitespace-pre-line">{x.s}</div>
               </div>
             ))}
           </div>
