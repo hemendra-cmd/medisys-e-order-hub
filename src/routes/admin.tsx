@@ -70,7 +70,7 @@ function AdminPage() {
                   <td className="p-3">{p.name}</td>
                   <td className="p-3 text-muted-foreground">{p.category}</td>
                   <td className="p-3 text-muted-foreground">{p.packSize}</td>
-                  <td className="p-3 text-right tabular-nums">₹{p.mrp.toLocaleString("en-IN")}</td>
+
                   <td className="p-3">{p.isOffer ? "Yes" : "—"}</td>
                   <td className="p-3">
                     <div className="flex justify-end gap-2">
