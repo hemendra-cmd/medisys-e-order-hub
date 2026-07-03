@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { DashboardHeader } from "@/components/site/DashboardHeader";
-import { DueBar } from "@/components/site/DueBar";
+
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { actions, useStore, type Category, type Product } from "@/lib/store";
 import { Minus, Plus, Tag } from "lucide-react";
@@ -49,7 +49,7 @@ function Dashboard() {
 
   return (
     <div className="min-h-screen bg-background pb-16">
-      <DueBar />
+
       <DashboardHeader query={query} onQueryChange={setQuery} />
 
       <div className="border-b bg-background">
@@ -155,11 +155,7 @@ function ProductCard({ product, quantity }: { product: Product; quantity: number
         </div>
         <h3 className="mt-1 line-clamp-2 text-sm font-semibold">{product.name}</h3>
         <p className="mt-0.5 text-xs text-muted-foreground">Pack: {product.packSize}</p>
-        <div className="mt-3 flex items-end justify-between">
-          <div>
-            <div className="text-[10px] uppercase text-muted-foreground">MRP</div>
-            <div className="font-display text-lg font-semibold">₹{product.mrp.toLocaleString("en-IN")}</div>
-          </div>
+        <div className="mt-3 flex items-end justify-end">
           {quantity === 0 ? (
             <button
               onClick={() => actions.addToCart(product.id)}
@@ -171,6 +167,7 @@ function ProductCard({ product, quantity }: { product: Product; quantity: number
             <QtyControl id={product.id} qty={quantity} />
           )}
         </div>
+
       </div>
     </div>
   );

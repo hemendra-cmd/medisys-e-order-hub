@@ -58,9 +58,9 @@ function AdminPage() {
                 <th className="p-3">Name</th>
                 <th className="p-3">Category</th>
                 <th className="p-3">Pack</th>
-                <th className="p-3 text-right">MRP</th>
                 <th className="p-3">Offer</th>
                 <th className="p-3"></th>
+
               </tr>
             </thead>
             <tbody>
@@ -70,7 +70,7 @@ function AdminPage() {
                   <td className="p-3">{p.name}</td>
                   <td className="p-3 text-muted-foreground">{p.category}</td>
                   <td className="p-3 text-muted-foreground">{p.packSize}</td>
-                  <td className="p-3 text-right tabular-nums">₹{p.mrp.toLocaleString("en-IN")}</td>
+
                   <td className="p-3">{p.isOffer ? "Yes" : "—"}</td>
                   <td className="p-3">
                     <div className="flex justify-end gap-2">
@@ -85,7 +85,7 @@ function AdminPage() {
                 </tr>
               ))}
               {products.length === 0 && (
-                <tr><td colSpan={7} className="p-6 text-center text-muted-foreground">No products yet.</td></tr>
+                <tr><td colSpan={6} className="p-6 text-center text-muted-foreground">No products yet.</td></tr>
               )}
             </tbody>
           </table>
@@ -119,8 +119,8 @@ function ProductDialog({
           <div className="col-span-2">
             <Input label="Product name" value={p.name} onChange={(v) => setP({ ...p, name: v })} />
           </div>
-          <Input label="MRP (₹)" type="number" value={String(p.mrp)} onChange={(v) => setP({ ...p, mrp: Number(v) || 0 })} />
           <label className="block">
+
             <span className="mb-1 block text-xs font-medium text-muted-foreground">Category</span>
             <select
               value={p.category}
