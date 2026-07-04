@@ -21,17 +21,23 @@ function PaymentPage() {
     .filter((i) => i.product);
   const totalItems = items.reduce((n, i) => n + i.quantity, 0);
 
+  const ADMIN_WHATSAPP = "919425405655";
+
   const placeOrder = () => {
-    const lines = cart.map((c) => {
-      const p = products.find((x) => x.id === c.productId);
-      return `${p?.name ?? "Item"} (${c.quantity})`;
-    });
-    console.log(
-      `[WhatsApp → admins]\n${user?.organisation ?? "Guest"}:\n${lines.join("\n")}`
+    const org = user?.organisation ?? "Guest";
+    const contact = user?.whatsapp || user?.email || "";
+    const lines = items.map(
+      (i, idx) => `${idx + 1}. ${i.product.brand}/${i.product.name}/${i.product.packSize} — Qty ${i.quantity}`,
     );
+    const message =
+      `New order from ${org}${contact ? ` (${contact})` : ""}\n\n` +
+      `${lines.join("\n")}\n\nTotal items: ${totalItems}`;
+    const url = `https://wa.me/${ADMIN_WHATSAPP}?text=${encodeURIComponent(message)}`;
+    window.open(url, "_blank", "noopener,noreferrer");
     actions.clearCart();
     setPlaced(true);
   };
+
 
   if (placed) {
     return (
@@ -85,8 +91,10 @@ function PaymentPage() {
         </button>
         <h1 className="font-display text-2xl font-semibold md:text-3xl">Confirm your order</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Review the items below and place the order. Our team will contact you to arrange payment and dispatch.
+          When you tap Place order, WhatsApp will open with your order pre-filled to send to Medisys at{" "}
+          <a href="https://wa.me/919425405655" target="_blank" rel="noopener noreferrer" className="font-semibold text-primary hover:underline">+91 94254 05655</a>. Just hit send.
         </p>
+
 
         <div className="mt-6 rounded-lg border bg-card p-6 shadow-card">
           <div className="mb-4 flex items-center gap-2 text-sm font-semibold">
@@ -117,7 +125,8 @@ function PaymentPage() {
           onClick={placeOrder}
           className="mt-6 h-11 w-full rounded-md bg-primary font-semibold text-primary-foreground hover:bg-primary-hover"
         >
-          Place order
+          Place order on WhatsApp
+
         </button>
       </div>
 
