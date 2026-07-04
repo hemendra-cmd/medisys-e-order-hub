@@ -21,7 +21,6 @@ const empty = (): Product => ({
   brand: "",
   name: "",
   packSize: "",
-  mrp: 0,
   category: "rapid-test",
   isOffer: false,
 });
