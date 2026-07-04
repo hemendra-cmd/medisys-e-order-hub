@@ -43,11 +43,6 @@ function CartPage() {
             <div className="space-y-3">
               {items.map((i) => (
                 <div key={i.productId} className="flex gap-4 rounded-lg border bg-card p-4 shadow-card">
-                  <div className="grid h-20 w-20 shrink-0 place-items-center rounded-md bg-accent">
-                    <svg viewBox="0 0 24 24" className="h-8 w-8 text-primary/70" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M9 3h6v4l5 8v6H4v-6l5-8V3z" />
-                    </svg>
-                  </div>
                   <div className="flex flex-1 flex-col">
                     <span className="text-xs font-semibold uppercase text-primary">{i.product.brand}</span>
                     <h3 className="text-sm font-semibold">{i.product.name}</h3>

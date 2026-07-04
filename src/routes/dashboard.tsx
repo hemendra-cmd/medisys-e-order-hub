@@ -138,12 +138,6 @@ function Dashboard() {
 function ProductCard({ product, quantity }: { product: Product; quantity: number }) {
   return (
     <div className="group flex flex-col overflow-hidden rounded-lg border bg-card shadow-card transition-shadow hover:shadow-elevated">
-      <div className="flex h-36 items-center justify-center bg-gradient-to-br from-accent/60 to-secondary">
-        <svg viewBox="0 0 24 24" className="h-14 w-14 text-primary/70" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M9 3h6v4l5 8v6H4v-6l5-8V3z" />
-          <path d="M9 7h6M8 15h8" />
-        </svg>
-      </div>
       <div className="flex flex-1 flex-col p-4">
         <div className="flex items-center justify-between">
           <span className="text-xs font-semibold uppercase tracking-wide text-primary">{product.brand}</span>
