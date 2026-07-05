@@ -15,6 +15,7 @@ export function SiteFooter() {
           <h4 className="mb-3 text-base font-semibold">Contact</h4>
           <ul className="space-y-2 text-muted-foreground">
             <li className="flex items-start gap-2"><Phone className="mt-0.5 h-4 w-4 text-primary" /> +91 9425405655</li>
+            <li className="flex items-start gap-2"><Phone className="mt-0.5 h-4 w-4 text-primary" /> Orders (WhatsApp): +91 9617655655</li>
             <li className="flex items-start gap-2"><Mail className="mt-0.5 h-4 w-4 text-primary" /> medisysbpl@rediffmail.com</li>
             <li className="flex items-start gap-2"><MapPin className="mt-0.5 h-4 w-4 text-primary" /> Medisys A-273, New Minal Residency JK Road Bhopal, India</li>
           </ul>
