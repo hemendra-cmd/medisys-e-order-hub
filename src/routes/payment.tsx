@@ -91,8 +91,10 @@ function PaymentPage() {
         </button>
         <h1 className="font-display text-2xl font-semibold md:text-3xl">Confirm your order</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          When you tap Place order, WhatsApp will open with your order pre-filled to send to Medisys at{" "}
-          <a href="https://wa.me/919425405655" target="_blank" rel="noopener noreferrer" className="font-semibold text-primary hover:underline">+91 94254 05655</a>. Just hit send.
+          Tapping Place order opens WhatsApp with your order pre-filled. Send it from our order line{" "}
+          <a href="https://wa.me/919617655655" target="_blank" rel="noopener noreferrer" className="font-semibold text-primary hover:underline">+91 96176 55655</a>{" "}
+          to Medisys at{" "}
+          <a href="https://wa.me/919425405655" target="_blank" rel="noopener noreferrer" className="font-semibold text-primary hover:underline">+91 94254 05655</a>.
         </p>
 
 

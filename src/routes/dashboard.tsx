@@ -25,22 +25,34 @@ function Dashboard() {
   const [query, setQuery] = useState("");
   const [brandFilter, setBrandFilter] = useState<string[]>([]);
   const [packFilter, setPackFilter] = useState<string[]>([]);
+  const [brandSearch, setBrandSearch] = useState("");
+  const [packSearch, setPackSearch] = useState("");
 
   const brands = useMemo(() => Array.from(new Set(products.map((p) => p.brand))).sort(), [products]);
   const packs = useMemo(() => Array.from(new Set(products.map((p) => p.packSize))).sort(), [products]);
 
+  const visibleBrands = useMemo(
+    () => brands.filter((b) => b.toLowerCase().includes(brandSearch.toLowerCase())),
+    [brands, brandSearch],
+  );
+  const visiblePacks = useMemo(
+    () => packs.filter((p) => p.toLowerCase().includes(packSearch.toLowerCase())),
+    [packs, packSearch],
+  );
+
+  const q = query.trim().toLowerCase();
   const filtered = useMemo(() => {
     return products.filter((p) => {
-      if (tab === "offers" ? !p.isOffer : p.category !== tab) return false;
+      // When searching, ignore the active tab so results appear across all categories.
+      if (!q) {
+        if (tab === "offers" ? !p.isOffer : p.category !== tab) return false;
+      }
       if (brandFilter.length && !brandFilter.includes(p.brand)) return false;
       if (packFilter.length && !packFilter.includes(p.packSize)) return false;
-      if (query) {
-        const q = query.toLowerCase();
-        if (!`${p.brand} ${p.name} ${p.packSize}`.toLowerCase().includes(q)) return false;
-      }
+      if (q && !`${p.brand} ${p.name} ${p.packSize}`.toLowerCase().includes(q)) return false;
       return true;
     });
-  }, [products, tab, brandFilter, packFilter, query]);
+  }, [products, tab, brandFilter, packFilter, q]);
 
   const qtyOf = (id: string) => cart.find((c) => c.productId === id)?.quantity ?? 0;
 
@@ -79,7 +91,13 @@ function Dashboard() {
           </h3>
 
           <FilterGroup title="Brands">
-            {brands.map((b) => (
+            <input
+              value={brandSearch}
+              onChange={(e) => setBrandSearch(e.target.value)}
+              placeholder="Search brands…"
+              className="mb-2 h-8 w-full rounded-md border bg-background px-2 text-xs outline-none ring-primary/40 focus:ring-2"
+            />
+            {visibleBrands.map((b) => (
               <Check
                 key={b}
                 label={b}
@@ -87,10 +105,19 @@ function Dashboard() {
                 onChange={() => toggle(brandFilter, b, setBrandFilter)}
               />
             ))}
+            {visibleBrands.length === 0 && (
+              <p className="text-xs text-muted-foreground">No matches.</p>
+            )}
           </FilterGroup>
 
           <FilterGroup title="Pack Size">
-            {packs.map((p) => (
+            <input
+              value={packSearch}
+              onChange={(e) => setPackSearch(e.target.value)}
+              placeholder="Search pack sizes…"
+              className="mb-2 h-8 w-full rounded-md border bg-background px-2 text-xs outline-none ring-primary/40 focus:ring-2"
+            />
+            {visiblePacks.map((p) => (
               <Check
                 key={p}
                 label={p}
@@ -98,6 +125,9 @@ function Dashboard() {
                 onChange={() => toggle(packFilter, p, setPackFilter)}
               />
             ))}
+            {visiblePacks.length === 0 && (
+              <p className="text-xs text-muted-foreground">No matches.</p>
+            )}
           </FilterGroup>
 
           {(brandFilter.length > 0 || packFilter.length > 0) && (
