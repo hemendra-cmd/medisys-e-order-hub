@@ -91,7 +91,13 @@ function Dashboard() {
           </h3>
 
           <FilterGroup title="Brands">
-            {brands.map((b) => (
+            <input
+              value={brandSearch}
+              onChange={(e) => setBrandSearch(e.target.value)}
+              placeholder="Search brands…"
+              className="mb-2 h-8 w-full rounded-md border bg-background px-2 text-xs outline-none ring-primary/40 focus:ring-2"
+            />
+            {visibleBrands.map((b) => (
               <Check
                 key={b}
                 label={b}
@@ -99,10 +105,19 @@ function Dashboard() {
                 onChange={() => toggle(brandFilter, b, setBrandFilter)}
               />
             ))}
+            {visibleBrands.length === 0 && (
+              <p className="text-xs text-muted-foreground">No matches.</p>
+            )}
           </FilterGroup>
 
           <FilterGroup title="Pack Size">
-            {packs.map((p) => (
+            <input
+              value={packSearch}
+              onChange={(e) => setPackSearch(e.target.value)}
+              placeholder="Search pack sizes…"
+              className="mb-2 h-8 w-full rounded-md border bg-background px-2 text-xs outline-none ring-primary/40 focus:ring-2"
+            />
+            {visiblePacks.map((p) => (
               <Check
                 key={p}
                 label={p}
@@ -110,6 +125,9 @@ function Dashboard() {
                 onChange={() => toggle(packFilter, p, setPackFilter)}
               />
             ))}
+            {visiblePacks.length === 0 && (
+              <p className="text-xs text-muted-foreground">No matches.</p>
+            )}
           </FilterGroup>
 
           {(brandFilter.length > 0 || packFilter.length > 0) && (
