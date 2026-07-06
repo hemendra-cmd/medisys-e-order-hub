@@ -24,13 +24,32 @@ export interface User {
   organisation: string;
 }
 
+export type OrderStatus = "placed" | "preparing";
+
+export interface OrderItem {
+  brand: string;
+  name: string;
+  packSize: string;
+  quantity: number;
+}
+
+export interface Order {
+  id: string;
+  organisation: string;
+  contact: string;
+  items: OrderItem[];
+  status: OrderStatus;
+  createdAt: number;
+}
+
 interface State {
   user: User | null;
   products: Product[];
   cart: CartItem[];
+  orders: Order[];
 }
 
-const KEY = "medisys.state.v3";
+const KEY = "medisys.state.v4";
 
 const load = (): State => {
   if (typeof window === "undefined") return { user: null, products: [], cart: [] };
