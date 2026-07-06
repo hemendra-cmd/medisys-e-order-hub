@@ -24,26 +24,50 @@ export interface User {
   organisation: string;
 }
 
+export type OrderStatus = "placed" | "preparing";
+
+export interface OrderItem {
+  brand: string;
+  name: string;
+  packSize: string;
+  quantity: number;
+}
+
+export interface Order {
+  id: string;
+  organisation: string;
+  contact: string;
+  items: OrderItem[];
+  status: OrderStatus;
+  createdAt: number;
+}
+
 interface State {
   user: User | null;
   products: Product[];
   cart: CartItem[];
+  orders: Order[];
 }
 
-const KEY = "medisys.state.v3";
+const KEY = "medisys.state.v4";
+
+const empty = (): State => ({ user: null, products: [], cart: [], orders: [] });
 
 const load = (): State => {
-  if (typeof window === "undefined") return { user: null, products: [], cart: [] };
+  if (typeof window === "undefined") return empty();
   try {
     const raw = localStorage.getItem(KEY);
-    if (raw) return JSON.parse(raw);
+    if (raw) {
+      const parsed = JSON.parse(raw) as Partial<State>;
+      return { ...empty(), ...parsed, orders: parsed.orders ?? [] };
+    }
   } catch {}
-  const initial: State = { user: null, products: SEED_PRODUCTS, cart: [] };
+  const initial: State = { ...empty(), products: SEED_PRODUCTS };
   localStorage.setItem(KEY, JSON.stringify(initial));
   return initial;
 };
 
-let state: State = typeof window !== "undefined" ? load() : { user: null, products: [], cart: [] };
+let state: State = typeof window !== "undefined" ? load() : empty();
 const listeners = new Set<() => void>();
 
 const persist = () => {
@@ -108,6 +132,24 @@ export const actions = {
   },
   deleteProduct(id: string) {
     state = { ...state, products: state.products.filter((p) => p.id !== id) };
+    persist();
+  },
+  addOrder(o: Omit<Order, "id" | "createdAt" | "status">): string {
+    const id = `o${Date.now()}`;
+    const order: Order = { ...o, id, createdAt: Date.now(), status: "placed" };
+    state = { ...state, orders: [order, ...state.orders] };
+    persist();
+    return id;
+  },
+  setOrderStatus(id: string, status: OrderStatus) {
+    state = {
+      ...state,
+      orders: state.orders.map((o) => (o.id === id ? { ...o, status } : o)),
+    };
+    persist();
+  },
+  deleteOrder(id: string) {
+    state = { ...state, orders: state.orders.filter((o) => o.id !== id) };
     persist();
   },
 };

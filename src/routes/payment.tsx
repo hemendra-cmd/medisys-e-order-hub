@@ -3,7 +3,7 @@ import { useState } from "react";
 import { DashboardHeader } from "@/components/site/DashboardHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { actions, useStore } from "@/lib/store";
-import { CheckCircle2, ArrowLeft, ClipboardList } from "lucide-react";
+import { CheckCircle2, ArrowLeft, ClipboardList, PackageCheck, Clock } from "lucide-react";
 
 export const Route = createFileRoute("/payment")({
   component: PaymentPage,
@@ -13,7 +13,8 @@ function PaymentPage() {
   const user = useStore((s) => s.user);
   const cart = useStore((s) => s.cart);
   const products = useStore((s) => s.products);
-  const [placed, setPlaced] = useState(false);
+  const [placedOrderId, setPlacedOrderId] = useState<string | null>(null);
+  const placedOrder = useStore((s) => s.orders.find((o) => o.id === placedOrderId) ?? null);
   const navigate = useNavigate();
 
   const items = cart
@@ -26,31 +27,46 @@ function PaymentPage() {
   const placeOrder = () => {
     const org = user?.organisation ?? "Guest";
     const contact = user?.whatsapp || user?.email || "";
-    const lines = items.map(
-      (i, idx) => `${idx + 1}. ${i.product.brand}/${i.product.name}/${i.product.packSize} — Qty ${i.quantity}`,
-    );
-    const message =
-      `New order from ${org}${contact ? ` (${contact})` : ""}\n\n` +
-      `${lines.join("\n")}\n\nTotal items: ${totalItems}`;
+    const orderItems = items.map((i) => ({
+      brand: i.product.brand,
+      name: i.product.name,
+      packSize: i.product.packSize,
+      quantity: i.quantity,
+    }));
+    const compact = orderItems
+      .map((i) => `${i.brand}/${i.name}/${i.packSize}${i.quantity > 1 ? ` x${i.quantity}` : ""}`)
+      .join(", ");
+    const message = `${org} — ${compact}`;
     const url = `https://wa.me/${ADMIN_WHATSAPP}?text=${encodeURIComponent(message)}`;
     window.open(url, "_blank", "noopener,noreferrer");
+    const id = actions.addOrder({ organisation: org, contact, items: orderItems });
     actions.clearCart();
-    setPlaced(true);
+    setPlacedOrderId(id);
   };
 
 
-  if (placed) {
+  if (placedOrder) {
+    const preparing = placedOrder.status === "preparing";
     return (
       <div className="min-h-screen bg-background">
         <DashboardHeader />
         <div className="mx-auto max-w-lg px-4 py-16 text-center">
-          <div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-success/15 text-success">
-            <CheckCircle2 className="h-9 w-9" />
+          <div className={`mx-auto grid h-16 w-16 place-items-center rounded-full ${preparing ? "bg-primary/15 text-primary" : "bg-success/15 text-success"}`}>
+            {preparing ? <PackageCheck className="h-9 w-9" /> : <CheckCircle2 className="h-9 w-9" />}
           </div>
-          <h1 className="mt-5 font-display text-2xl font-semibold">Order placed</h1>
+          <h1 className="mt-5 font-display text-2xl font-semibold">
+            {preparing ? "Order under preparation" : "Order placed"}
+          </h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            Thanks — your order has been sent to our team. We'll reach out shortly on WhatsApp to confirm dispatch and payment.
+            {preparing
+              ? "Your order is being prepared and will be delivered soon."
+              : "Thanks — your order has been received. You'll see the status update here as soon as our team starts preparing it."}
           </p>
+          {!preparing && (
+            <div className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-secondary px-3 py-1 text-xs text-muted-foreground">
+              <Clock className="h-3 w-3" /> Awaiting confirmation
+            </div>
+          )}
           <Link
             to="/dashboard"
             className="mt-6 inline-block rounded-md bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary-hover"
