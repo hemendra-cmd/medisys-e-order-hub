@@ -139,8 +139,9 @@ function Dashboard() {
             </button>
           )}
 
-          <div className="mt-6 border-t pt-4 text-xs">
-            <Link to="/admin" className="text-primary hover:underline">Manage products (Admin)</Link>
+          <div className="mt-6 space-y-1 border-t pt-4 text-xs">
+            <Link to="/orders" className="block text-primary hover:underline">View orders (Admin)</Link>
+            <Link to="/admin" className="block text-primary hover:underline">Manage products (Admin)</Link>
           </div>
         </aside>
 
