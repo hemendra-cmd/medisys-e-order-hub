@@ -134,6 +134,24 @@ export const actions = {
     state = { ...state, products: state.products.filter((p) => p.id !== id) };
     persist();
   },
+  addOrder(o: Omit<Order, "id" | "createdAt" | "status">): string {
+    const id = `o${Date.now()}`;
+    const order: Order = { ...o, id, createdAt: Date.now(), status: "placed" };
+    state = { ...state, orders: [order, ...state.orders] };
+    persist();
+    return id;
+  },
+  setOrderStatus(id: string, status: OrderStatus) {
+    state = {
+      ...state,
+      orders: state.orders.map((o) => (o.id === id ? { ...o, status } : o)),
+    };
+    persist();
+  },
+  deleteOrder(id: string) {
+    state = { ...state, orders: state.orders.filter((o) => o.id !== id) };
+    persist();
+  },
 };
 
 export const selectors = {
