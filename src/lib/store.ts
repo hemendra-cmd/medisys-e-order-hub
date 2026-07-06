@@ -51,18 +51,23 @@ interface State {
 
 const KEY = "medisys.state.v4";
 
+const empty = (): State => ({ user: null, products: [], cart: [], orders: [] });
+
 const load = (): State => {
-  if (typeof window === "undefined") return { user: null, products: [], cart: [] };
+  if (typeof window === "undefined") return empty();
   try {
     const raw = localStorage.getItem(KEY);
-    if (raw) return JSON.parse(raw);
+    if (raw) {
+      const parsed = JSON.parse(raw) as Partial<State>;
+      return { ...empty(), ...parsed, orders: parsed.orders ?? [] };
+    }
   } catch {}
-  const initial: State = { user: null, products: SEED_PRODUCTS, cart: [] };
+  const initial: State = { ...empty(), products: SEED_PRODUCTS };
   localStorage.setItem(KEY, JSON.stringify(initial));
   return initial;
 };
 
-let state: State = typeof window !== "undefined" ? load() : { user: null, products: [], cart: [] };
+let state: State = typeof window !== "undefined" ? load() : empty();
 const listeners = new Set<() => void>();
 
 const persist = () => {
