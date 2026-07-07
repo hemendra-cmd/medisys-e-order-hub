@@ -132,8 +132,7 @@ function PaymentPage() {
           onClick={placeOrder}
           className="mt-6 h-11 w-full rounded-md bg-primary font-semibold text-primary-foreground hover:bg-primary-hover"
         >
-          Place order on WhatsApp
-
+          Place order
         </button>
       </div>
 
