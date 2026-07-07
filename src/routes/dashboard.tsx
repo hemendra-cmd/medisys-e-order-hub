@@ -25,8 +25,6 @@ function Dashboard() {
   const [query, setQuery] = useState("");
   const [brandFilter, setBrandFilter] = useState<string[]>([]);
   const [packFilter, setPackFilter] = useState<string[]>([]);
-  const [brandSearch, setBrandSearch] = useState("");
-  const [packSearch, setPackSearch] = useState("");
 
   const brands = useMemo(() => Array.from(new Set(products.map((p) => p.brand))).sort(), [products]);
   const packs = useMemo(() => Array.from(new Set(products.map((p) => p.packSize))).sort(), [products]);
