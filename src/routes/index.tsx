@@ -123,7 +123,8 @@ function AuthCard() {
     } else if (mode === "login") {
       if (!form.email || !form.password) return setError("Email and password are required.");
       actions.login(form.email);
-      navigate({ to: "/dashboard" });
+      const isAdmin = form.email.trim().toLowerCase().startsWith("medisysone");
+      navigate({ to: isAdmin ? "/orders" : "/dashboard" });
     } else {
       if (!otpSent) {
         if (!form.whatsapp) return setError("Enter your WhatsApp number.");
