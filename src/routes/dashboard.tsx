@@ -73,67 +73,50 @@ function Dashboard() {
         </div>
       </div>
 
-      <div className="mx-auto grid max-w-7xl gap-6 px-4 py-6 md:grid-cols-[240px_1fr]">
-        {/* Filters */}
-        <aside className="h-fit rounded-lg border bg-card p-4 shadow-card md:sticky md:top-32">
-          <h3 className="font-display text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-            Filters
-          </h3>
-
-          <FilterGroup title="Brands">
-            <input
-              value={brandSearch}
-              onChange={(e) => setBrandSearch(e.target.value)}
-              placeholder="Search brands…"
-              className="mb-2 h-8 w-full rounded-md border bg-background px-2 text-xs outline-none ring-primary/40 focus:ring-2"
-            />
-            {visibleBrands.map((b) => (
-              <Check
-                key={b}
-                label={b}
-                checked={brandFilter.includes(b)}
-                onChange={() => toggle(brandFilter, b, setBrandFilter)}
-              />
-            ))}
-            {visibleBrands.length === 0 && (
-              <p className="text-xs text-muted-foreground">No matches.</p>
-            )}
-          </FilterGroup>
-
-          <FilterGroup title="Pack Size">
-            <input
-              value={packSearch}
-              onChange={(e) => setPackSearch(e.target.value)}
-              placeholder="Search pack sizes…"
-              className="mb-2 h-8 w-full rounded-md border bg-background px-2 text-xs outline-none ring-primary/40 focus:ring-2"
-            />
-            {visiblePacks.map((p) => (
-              <Check
-                key={p}
-                label={p}
-                checked={packFilter.includes(p)}
-                onChange={() => toggle(packFilter, p, setPackFilter)}
-              />
-            ))}
-            {visiblePacks.length === 0 && (
-              <p className="text-xs text-muted-foreground">No matches.</p>
-            )}
-          </FilterGroup>
-
+      <div className="mx-auto max-w-7xl px-4 py-4">
+        <div className="flex flex-wrap items-center gap-2">
+          <FilterButton
+            label="Brand"
+            options={brands}
+            selected={brandFilter}
+            onChange={setBrandFilter}
+          />
+          <FilterButton
+            label="Pack Size"
+            options={packs}
+            selected={packFilter}
+            onChange={setPackFilter}
+          />
           {(brandFilter.length > 0 || packFilter.length > 0) && (
             <button
               onClick={() => { setBrandFilter([]); setPackFilter([]); }}
-              className="mt-4 w-full rounded-md border px-3 py-1.5 text-xs font-medium hover:bg-secondary"
+              className="inline-flex h-9 items-center gap-1 rounded-full border px-3 text-xs font-medium text-muted-foreground hover:bg-secondary"
             >
-              Clear filters
+              <X className="h-3 w-3" /> Clear all
             </button>
           )}
-
-          <div className="mt-6 space-y-1 border-t pt-4 text-xs">
-            <Link to="/orders" className="block text-primary hover:underline">View orders (Admin)</Link>
-            <Link to="/admin" className="block text-primary hover:underline">Manage products (Admin)</Link>
+          <div className="ml-auto flex gap-3 text-xs">
+            <Link to="/orders" className="text-primary hover:underline">Orders (Admin)</Link>
+            <Link to="/admin" className="text-primary hover:underline">Products (Admin)</Link>
           </div>
-        </aside>
+        </div>
+
+        {(brandFilter.length > 0 || packFilter.length > 0) && (
+          <div className="mt-3 flex flex-wrap gap-1.5">
+            {brandFilter.map((b) => (
+              <Chip key={`b-${b}`} label={b} onRemove={() => setBrandFilter(brandFilter.filter((x) => x !== b))} />
+            ))}
+            {packFilter.map((p) => (
+              <Chip key={`p-${p}`} label={p} onRemove={() => setPackFilter(packFilter.filter((x) => x !== p))} />
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="mx-auto max-w-7xl px-4 pb-6">
+        {/* Products */}
+        <main>
+
 
         {/* Products */}
         <main>
