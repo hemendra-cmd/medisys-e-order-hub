@@ -114,11 +114,6 @@ function Dashboard() {
       </div>
 
       <div className="mx-auto max-w-7xl px-4 pb-6">
-        {/* Products */}
-        <main>
-
-
-        {/* Products */}
         <main>
           {filtered.length === 0 ? (
             <div className="rounded-lg border bg-card p-10 text-center text-sm text-muted-foreground">
