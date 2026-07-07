@@ -99,8 +99,7 @@ function PaymentPage() {
         </button>
         <h1 className="font-display text-2xl font-semibold md:text-3xl">Confirm your order</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Tapping Place order opens WhatsApp with your order pre-filled to Medisys at{" "}
-          <a href="https://wa.me/919425405655" target="_blank" rel="noopener noreferrer" className="font-semibold text-primary hover:underline">+91 94254 05655</a>.
+          Review your items below and tap Place order to submit — our team will confirm and start preparing your order.
         </p>
 
 
