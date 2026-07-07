@@ -29,14 +29,6 @@ function Dashboard() {
   const brands = useMemo(() => Array.from(new Set(products.map((p) => p.brand))).sort(), [products]);
   const packs = useMemo(() => Array.from(new Set(products.map((p) => p.packSize))).sort(), [products]);
 
-  const visibleBrands = useMemo(
-    () => brands.filter((b) => b.toLowerCase().includes(brandSearch.toLowerCase())),
-    [brands, brandSearch],
-  );
-  const visiblePacks = useMemo(
-    () => packs.filter((p) => p.toLowerCase().includes(packSearch.toLowerCase())),
-    [packs, packSearch],
-  );
 
   const q = query.trim().toLowerCase();
   const filtered = useMemo(() => {
