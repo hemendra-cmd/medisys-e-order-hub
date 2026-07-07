@@ -22,8 +22,6 @@ function PaymentPage() {
     .filter((i) => i.product);
   const totalItems = items.reduce((n, i) => n + i.quantity, 0);
 
-  const ADMIN_WHATSAPP = "919425405655";
-
   const placeOrder = () => {
     const org = user?.organisation ?? "Guest";
     const contact = user?.whatsapp || user?.email || "";
@@ -33,12 +31,6 @@ function PaymentPage() {
       packSize: i.product.packSize,
       quantity: i.quantity,
     }));
-    const compact = orderItems
-      .map((i) => `${i.brand}/${i.name}/${i.packSize}${i.quantity > 1 ? ` x${i.quantity}` : ""}`)
-      .join(", ");
-    const message = `${org} — ${compact}`;
-    const url = `https://wa.me/${ADMIN_WHATSAPP}?text=${encodeURIComponent(message)}`;
-    window.open(url, "_blank", "noopener,noreferrer");
     const id = actions.addOrder({ organisation: org, contact, items: orderItems });
     actions.clearCart();
     setPlacedOrderId(id);
@@ -107,8 +99,7 @@ function PaymentPage() {
         </button>
         <h1 className="font-display text-2xl font-semibold md:text-3xl">Confirm your order</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Tapping Place order opens WhatsApp with your order pre-filled to Medisys at{" "}
-          <a href="https://wa.me/919425405655" target="_blank" rel="noopener noreferrer" className="font-semibold text-primary hover:underline">+91 94254 05655</a>.
+          Review your items below and tap Place order to submit — our team will confirm and start preparing your order.
         </p>
 
 
@@ -141,8 +132,7 @@ function PaymentPage() {
           onClick={placeOrder}
           className="mt-6 h-11 w-full rounded-md bg-primary font-semibold text-primary-foreground hover:bg-primary-hover"
         >
-          Place order on WhatsApp
-
+          Place order
         </button>
       </div>
 
