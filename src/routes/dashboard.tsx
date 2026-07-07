@@ -46,8 +46,6 @@ function Dashboard() {
 
   const qtyOf = (id: string) => cart.find((c) => c.productId === id)?.quantity ?? 0;
 
-  const toggle = (arr: string[], v: string, set: (n: string[]) => void) =>
-    set(arr.includes(v) ? arr.filter((x) => x !== v) : [...arr, v]);
 
   return (
     <div className="min-h-screen bg-background pb-16">
