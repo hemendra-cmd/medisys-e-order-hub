@@ -22,8 +22,6 @@ function PaymentPage() {
     .filter((i) => i.product);
   const totalItems = items.reduce((n, i) => n + i.quantity, 0);
 
-  const ADMIN_WHATSAPP = "919425405655";
-
   const placeOrder = () => {
     const org = user?.organisation ?? "Guest";
     const contact = user?.whatsapp || user?.email || "";
@@ -33,12 +31,6 @@ function PaymentPage() {
       packSize: i.product.packSize,
       quantity: i.quantity,
     }));
-    const compact = orderItems
-      .map((i) => `${i.brand}/${i.name}/${i.packSize}${i.quantity > 1 ? ` x${i.quantity}` : ""}`)
-      .join(", ");
-    const message = `${org} — ${compact}`;
-    const url = `https://wa.me/${ADMIN_WHATSAPP}?text=${encodeURIComponent(message)}`;
-    window.open(url, "_blank", "noopener,noreferrer");
     const id = actions.addOrder({ organisation: org, contact, items: orderItems });
     actions.clearCart();
     setPlacedOrderId(id);
