@@ -1,10 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { DashboardHeader } from "@/components/site/DashboardHeader";
 
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { actions, useStore, type Category, type Product } from "@/lib/store";
-import { Minus, Plus, Tag } from "lucide-react";
+import { ChevronDown, Minus, Plus, Tag, X } from "lucide-react";
 
 export const Route = createFileRoute("/dashboard")({
   component: Dashboard,
