@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import logoAsset from "@/assets/medisys-logo.png.asset.json";
+import logoAsset from "@/assets/MEDISYS.jpeg";
 
 export function Logo({ className = "", size = 36 }: { className?: string; size?: number }) {
   return (
