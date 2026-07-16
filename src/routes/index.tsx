@@ -4,7 +4,7 @@ import { Logo } from "@/components/site/Logo";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { actions } from "@/lib/store";
 import { ShieldCheck, Truck, BadgeCheck, HeartPulse } from "lucide-react";
-import bannerAsset from "@/assets/medisys-banner.png.asset.json";
+import bannerImage from "../assets/MEDISYS BANNER.jpeg";
 
 export const Route = createFileRoute("/")({
   component: Landing,
@@ -55,10 +55,9 @@ function Landing() {
 
       <section aria-label="Medisys banner" className="border-y">
         <img
-          src={bannerAsset.url}
+          src={bannerImage}
           alt="Medisys — Celebrating 17 years of trust"
-          className="h-auto w-full object-cover"
-          loading="lazy"
+          className="w-full h-auto rounded-xl object-cover"
         />
       </section>
 
