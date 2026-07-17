@@ -263,8 +263,30 @@ export const actions = {
 
   persist();
 },
-  addOrder(o: Omit<Order, "id" | "createdAt" | "status">): string {
+  async addOrder(
+  o: Omit<Order, "id" | "createdAt" | "status">
+): Promise<string> {
+    if (isSupabaseConfigured && supabase) {
+
+  const { error } = await supabase
+    .from("orders")
+    .insert({
+      id: order.id,
+      customer_name: order.organisation,
+      phone: order.contact,
+      city: "",
+      address: "",
+      total: 0,
+      status: order.status,
+    });
+
+  if (error) {
+    console.error(error);
+    return "";
+  }
+}
     const id = `o${Date.now()}`;
+    
     const order: Order = { ...o, id, createdAt: Date.now(), status: "placed" };
     state = { ...state, orders: [order, ...state.orders] };
     persist();
