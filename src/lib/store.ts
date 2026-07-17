@@ -266,6 +266,15 @@ export const actions = {
   async addOrder(
   o: Omit<Order, "id" | "createdAt" | "status">
 ): Promise<string> {
+      // Create the order FIRST
+  const id = `o${Date.now()}`;
+
+  const order: Order = {
+    ...o,
+    id,
+    createdAt: Date.now(),
+    status: "placed",
+  };
     if (isSupabaseConfigured && supabase) {
 
   const { error } = await supabase
@@ -285,9 +294,6 @@ export const actions = {
     return "";
   }
 }
-    const id = `o${Date.now()}`;
-    
-    const order: Order = { ...o, id, createdAt: Date.now(), status: "placed" };
     state = { ...state, orders: [order, ...state.orders] };
     persist();
     return id;
