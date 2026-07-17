@@ -205,20 +205,21 @@ export const actions = {
     state = { ...state, cart: [] };
     persist();
   },
-  async upsertProduct(p: Product) {
-  if (isSupabaseConfigured && supabase) {
-    const { error } = await supabase
-      .from("products")
-      .upsert({
-        id: p.id,
-        name: p.name,
-        category: p.category,
-        description: `${p.brand} | ${p.packSize}`,
-        price: 0,
-        stock: 0,
-        image: "",
-        is_offer: p.isOffer ?? false,
-      });
+  const { error } = await supabase
+  .from("orders")
+  .insert({
+    customer_name: order.organisation,
+    phone: order.contact,
+    city: "",
+    address: "",
+    total: 0,
+    status: order.status,
+  });
+
+if (error) {
+  console.error(error);
+  return "";
+}
 
     if (error) {
       console.error("Failed to save product:", error);
