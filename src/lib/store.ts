@@ -108,7 +108,50 @@ const load = (): State => {
 };
 
 let state: State = typeof window !== "undefined" ? load() : empty();
+
+const hydrateProductsFromSupabase = async () => {
+ if (
+    typeof window === "undefined" ||
+    !isSupabaseConfigured ||
+    !supabase
+  ) {
+    return;
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from("products")
+      .select("id, name, category, description, is_offer")
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+
+    const products = (data ?? [])
+      .map((item) =>
+        mapSupabaseProduct(item as Record<string, unknown>)
+      )
+      .filter((item): item is Product => item !== null);
+
+    if (products.length > 0) {
+      state = {
+        ...state,
+        products,
+      };
+
+      persist();
+    }
+  } catch (error) {
+    console.error(
+      "Failed to load products from Supabase",
+      error
+    );
+  }
+};
 const listeners = new Set<() => void>();
+
+if (typeof window !== "undefined") {
+  void hydrateProductsFromSupabase();
+}
 
 const persist = () => {
   if (typeof window !== "undefined") localStorage.setItem(KEY, JSON.stringify(state));
