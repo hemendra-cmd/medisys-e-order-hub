@@ -22,7 +22,7 @@ function PaymentPage() {
     .filter((i) => i.product);
   const totalItems = items.reduce((n, i) => n + i.quantity, 0);
 
-  const placeOrder = () => {
+  const placeOrder = async () => {
     const org = user?.organisation ?? "Guest";
     const contact = user?.whatsapp || user?.email || "";
     const orderItems = items.map((i) => ({
@@ -31,11 +31,15 @@ function PaymentPage() {
       packSize: i.product.packSize,
       quantity: i.quantity,
     }));
-    const id = actions.addOrder({ organisation: org, contact, items: orderItems });
-    actions.clearCart();
-    setPlacedOrderId(id);
-  };
-
+    const id = await actions.addOrder({
+   organisation: org,
+   contact,
+   items: orderItems,
+ });
+ if (!id) {
+  alert("Failed to place order.");
+  return;
+}
 
   if (placedOrder) {
     const preparing = placedOrder.status === "preparing";
