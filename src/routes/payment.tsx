@@ -31,15 +31,20 @@ function PaymentPage() {
       packSize: i.product.packSize,
       quantity: i.quantity,
     }));
-    const id = await actions.addOrder({
-   organisation: org,
-   contact,
-   items: orderItems,
- });
- if (!id) {
-  alert("Failed to place order.");
-  return;
-}
+  const id = await actions.addOrder({
+    organisation: org,
+    contact,
+    items: orderItems,
+  });
+
+  if (!id) {
+    alert("Failed to place order.");
+    return;
+  }
+
+  actions.clearCart();
+  setPlacedOrderId(id);
+};
 
   if (placedOrder) {
     const preparing = placedOrder.status === "preparing";
