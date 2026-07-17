@@ -48,7 +48,7 @@ function PaymentPage() {
   }));
 
 
-  const id = await actions.addOrder({
+const placeOrder = async () => {
     organisation: org,
     contact,
     items: orderItems,
