@@ -280,7 +280,6 @@ export const actions = {
   const { error } = await supabase
     .from("orders")
     .insert({
-      id: order.id,
       customer_name: order.organisation,
       phone: order.contact,
       city: "",
