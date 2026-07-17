@@ -19,31 +19,61 @@ function formatOrder(o: Order) {
 
 function OrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
-  const loadOrders = async () => {
-  const { data, error } = await supabase
-    .from("orders")
-    .select("*")
-    .order("created_at", { ascending: false });
+ const loadOrders = async () => {
 
-  if (error) {
-    console.error(error);
+  // Get all orders
+  const { data: ordersData, error: ordersError } =
+    await supabase
+      .from("orders")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+  if (ordersError) {
+    console.error(ordersError);
     return;
   }
 
-  console.log(data);
+  // Get all order items
+  const { data: itemsData, error: itemsError } =
+    await supabase
+      .from("order_items")
+      .select("*");
 
-  // TEMPORARY MAPPING
-  const mappedOrders: Order[] = (data || []).map((item: any) => ({
-    id: item.id,
-    organisation: item.organisation,
-    contact: item.phone,
-    items: [], // we'll load these later
-    status:
-      item.status === "preparing"
-        ? "preparing"
-        : "placed",
-    createdAt: new Date(item.created_at).getTime(),
-  }));
+  if (itemsError) {
+    console.error(itemsError);
+    return;
+  }
+
+  const mappedOrders: Order[] = (ordersData || []).map(
+    (order: any) => {
+
+      const items = (itemsData || [])
+        .filter(
+          (item: any) =>
+            item.order_id === order.id
+        )
+        .map((item: any) => ({
+          brand: item.brand ?? "",
+          name: item.name ?? "",
+          packSize: item.pack_size ?? "",
+          quantity: item.quantity,
+        }));
+
+      return {
+        id: order.id,
+        organisation: order.organisation,
+        contact: order.phone,
+        items,
+        status:
+          order.status === "preparing"
+            ? "preparing"
+            : "placed",
+        createdAt: new Date(
+          order.created_at
+        ).getTime(),
+      };
+    }
+  );
 
   setOrders(mappedOrders);
 };
