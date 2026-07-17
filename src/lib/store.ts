@@ -205,18 +205,64 @@ export const actions = {
     state = { ...state, cart: [] };
     persist();
   },
-  upsertProduct(p: Product) {
-    const exists = state.products.some((x) => x.id === p.id);
-    state = {
-      ...state,
-      products: exists ? state.products.map((x) => (x.id === p.id ? p : x)) : [...state.products, p],
-    };
-    persist();
-  },
-  deleteProduct(id: string) {
-    state = { ...state, products: state.products.filter((p) => p.id !== id) };
-    persist();
-  },
+  async upsertProduct(p: Product) {
+  if (isSupabaseConfigured && supabase) {
+    const { error } = await supabase
+      .from("products")
+      .upsert({
+        id: p.id,
+        name: p.name,
+        category: p.category,
+        description: `${p.brand} | ${p.packSize}`,
+        price: 0,
+        stock: 0,
+        image: "",
+        is_offer: p.isOffer ?? false,
+      });
+
+    if (error) {
+      console.error("Failed to save product:", error);
+      return;
+    }
+
+    await hydrateProductsFromSupabase();
+    return;
+  }
+
+  const exists = state.products.some((x) => x.id === p.id);
+
+  state = {
+    ...state,
+    products: exists
+      ? state.products.map((x) => (x.id === p.id ? p : x))
+      : [...state.products, p],
+  };
+
+  persist();
+},
+  async deleteProduct(id: string) {
+  if (isSupabaseConfigured && supabase) {
+    const { error } = await supabase
+      .from("products")
+      .delete()
+      .eq("id", id);
+
+    if (error) {
+      console.error("Failed to delete product:", error);
+      return;
+    }
+
+    await hydrateProductsFromSupabase();
+    return;
+  }
+
+  state = {
+    ...state,
+    products: state.products.filter((p) => p.id !== id),
+  };
+
+  persist();
+},
   addOrder(o: Omit<Order, "id" | "createdAt" | "status">): string {
     const id = `o${Date.now()}`;
     const order: Order = { ...o, id, createdAt: Date.now(), status: "placed" };
