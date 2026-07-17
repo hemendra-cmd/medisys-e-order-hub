@@ -3,6 +3,8 @@ import { DashboardHeader } from "@/components/site/DashboardHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { actions, useStore, type Order } from "@/lib/store";
 import { ArrowLeft, Check, Trash2, PackageCheck, Clock } from "lucide-react";
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/orders")({
   component: OrdersPage,
@@ -16,8 +18,38 @@ function formatOrder(o: Order) {
 }
 
 function OrdersPage() {
-  const orders = useStore((s) => s.orders);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const loadOrders = async () => {
+  const { data, error } = await supabase
+    .from("orders")
+    .select("*")
+    .order("created_at", { ascending: false });
 
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  console.log(data);
+
+  // TEMPORARY MAPPING
+  const mappedOrders: Order[] = (data || []).map((item: any) => ({
+    id: item.id,
+    organisation: item.organisation,
+    contact: item.phone,
+    items: [], // we'll load these later
+    status:
+      item.status === "preparing"
+        ? "preparing"
+        : "placed",
+    createdAt: new Date(item.created_at).getTime(),
+  }));
+
+  setOrders(mappedOrders);
+};
+  useEffect(() => {
+  loadOrders();
+}, []);
   return (
     <div className="min-h-screen bg-background">
       <DashboardHeader />
