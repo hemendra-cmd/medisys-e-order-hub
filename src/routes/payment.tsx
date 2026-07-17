@@ -31,18 +31,38 @@ function PaymentPage() {
       packSize: i.product.packSize,
       quantity: i.quantity,
     }));
+  const placeOrder = async () => {
+
+  const org = user?.organisation ?? "Guest";
+
+  const contact =
+    user?.whatsapp ||
+    user?.email ||
+    "";
+
+  const orderItems = items.map((i) => ({
+    brand: i.product.brand,
+    name: i.product.name,
+    packSize: i.product.packSize,
+    quantity: i.quantity,
+  }));
+
+
   const id = await actions.addOrder({
     organisation: org,
     contact,
     items: orderItems,
   });
 
+
   if (!id) {
     alert("Failed to place order.");
     return;
   }
 
+
   actions.clearCart();
+
   setPlacedOrderId(id);
 };
 
