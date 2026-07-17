@@ -204,16 +204,16 @@ export const actions = {
   clearCart() {
     state = { ...state, cart: [] };
     persist();
-  },
+  };
   const { error } = await supabase
-  .from("orders")
-  .insert({
-    customer_name: order.organisation,
-    phone: order.contact,
-    city: "",
-    address: "",
-    total: 0,
-    status: order.status,
+   .from("orders")
+   .insert({
+     customer_name: order.organisation,
+     phone: order.contact,
+     city: "",
+     address: "",
+     total: 0,
+     status: order.status,
   });
 
 if (error) {
