@@ -167,10 +167,28 @@ function OrdersPage() {
                       )}
                     </label>
                     <button
-                      onClick={() => confirm("Delete this order?") && actions.deleteOrder(o.id)}
-                      className="rounded-md p-2 text-muted-foreground hover:bg-secondary hover:text-primary"
-                      aria-label="Delete order"
-                    >
+                     onClick={async () => {
+ 
+                      if (!confirm("Delete this order?")) {
+                        return;
+                      }
+
+                      const { error } = await supabase
+                        .from("orders")
+                        .delete()
+                        .eq("id", o.id);
+
+                      if (error) {
+                        console.error(error);
+                        return;
+                      }
+               
+                      loadOrders();
+               
+                      }}
+                    className="rounded-md p-2 text-muted-foreground hover:bg-secondary hover:text-primary"
+                    aria-label="Delete order"
+                   >
                       <Trash2 className="h-4 w-4" />
                     </button>
                   </div>
