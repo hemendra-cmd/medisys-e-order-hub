@@ -290,6 +290,10 @@ async upsertProduct(p: Product) {
 
   // SUPABASE
   if (isSupabaseConfigured && supabase) {
+    const totalQuantity = order.items.reduce(
+     (sum, item) => sum + item.quantity,
+      0
+    );
 
     // STEP 1 - Insert into orders table
     const { data, error } = await supabase
