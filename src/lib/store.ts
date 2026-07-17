@@ -1,6 +1,7 @@
 // Lightweight client-side store using localStorage. UI-only build.
 import { useSyncExternalStore } from "react";
 import { SEED_PRODUCTS } from "./products-data";
+import { supabase, isSupabaseConfigured } from "./supabase";
 
 export type Category = "offers" | "rapid-test" | "biochemistry" | "lab-accessories" | "instruments";
 
@@ -52,6 +53,45 @@ interface State {
 const KEY = "medisys.state.v4";
 
 const empty = (): State => ({ user: null, products: [], cart: [], orders: [] });
+
+const normalizeCategory = (value: unknown): Category => {
+  const categories = [
+    "offers",
+    "rapid-test",
+    "biochemistry",
+    "lab-accessories",
+    "instruments",
+  ];
+
+  return categories.includes(String(value))
+    ? (value as Category)
+    : "rapid-test";
+};
+
+const mapSupabaseProduct = (
+  item: Record<string, unknown>
+): Product | null => {
+  const name = typeof item.name === "string" ? item.name : "";
+
+  if (!name) return null;
+
+  const description =
+    typeof item.description === "string"
+      ? item.description
+      : "";
+
+  const [brand = "", packSize = ""] =
+    description.split(" | ");
+
+  return {
+    id: String(item.id),
+    name,
+    brand,
+    packSize,
+    category: normalizeCategory(item.category),
+    isOffer: Boolean(item.is_offer),
+  };
+};
 
 const load = (): State => {
   if (typeof window === "undefined") return empty();
