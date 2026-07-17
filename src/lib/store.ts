@@ -337,6 +337,9 @@ async upsertProduct(p: Product) {
           product_id: product.id,
           quantity: item.quantity,
           price: 0,
+          brand: item.brand,
+          name: item.name,
+          pack_size: item.packSize,
         });
 
       if (itemError) {
