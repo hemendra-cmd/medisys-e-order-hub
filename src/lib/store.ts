@@ -202,24 +202,24 @@ export const actions = {
     persist();
   },
   clearCart() {
-    state = { ...state, cart: [] };
-    persist();
-  };
-  const { error } = await supabase
-   .from("orders")
-   .insert({
-     customer_name: order.organisation,
-     phone: order.contact,
-     city: "",
-     address: "",
-     total: 0,
-     status: order.status,
-  });
+  state = { ...state, cart: [] };
+  persist();
+},
 
-if (error) {
-  console.error(error);
-  return "";
-}
+async upsertProduct(p: Product) {
+  if (isSupabaseConfigured && supabase) {
+    const { error } = await supabase
+      .from("products")
+      .upsert({
+        id: p.id,
+        name: p.name,
+        category: p.category,
+        description: `${p.brand} | ${p.packSize}`,
+        price: 0,
+        stock: 0,
+        image: "",
+        is_offer: p.isOffer ?? false,
+      });
 
     if (error) {
       console.error("Failed to save product:", error);
@@ -230,12 +230,16 @@ if (error) {
     return;
   }
 
-  const exists = state.products.some((x) => x.id === p.id);
+  const exists = state.products.some(
+    (x) => x.id === p.id
+  );
 
   state = {
     ...state,
     products: exists
-      ? state.products.map((x) => (x.id === p.id ? p : x))
+      ? state.products.map((x) =>
+          x.id === p.id ? p : x
+        )
       : [...state.products, p],
   };
 
