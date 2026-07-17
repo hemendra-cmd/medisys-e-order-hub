@@ -72,7 +72,7 @@ function PaymentPage() {
           </p>
           {!preparing && (
             <div className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-secondary px-3 py-1 text-xs text-muted-foreground">
-              <Clock className="h-3 w-3" /> Awaiting confirmation
+              <Clock className="h-3 w-3" /> order confirmed
             </div>
           )}
           <Link
