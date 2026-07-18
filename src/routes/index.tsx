@@ -169,7 +169,7 @@ function AuthCard() {
         {mode === "signup" && (
           <>
             <Field label="WhatsApp number" value={form.whatsapp} onChange={upd("whatsapp")} placeholder="+91 98xxxxxxxx" />
-            <Field label="Email ID (optional)" type="email" value={form.email} onChange={upd("email")} placeholder="you@lab.com" />
+            <Field label="Email ID " type="email" value={form.email} onChange={upd("email")} placeholder="you@lab.com" />
             <Field label="Organisation name" value={form.organisation} onChange={upd("organisation")} placeholder="City Diagnostics" />
             <Field label="Password" type="password" value={form.password} onChange={upd("password")} placeholder="Create password" />
           </>
