@@ -142,8 +142,7 @@ function AuthCard() {
 
   navigate({ to: "/dashboard" });
 }
-      navigate({ to: "/dashboard" });
-    } else if (mode === "login") {
+ else if (mode === "login") {
       if (!form.email || !form.password) return setError("Email and password are required.");
       actions.login(form.email);
       const isAdmin = form.email.trim().toLowerCase().startsWith("medisysone");
@@ -154,7 +153,7 @@ function AuthCard() {
         setOtpSent(true);
         return;
       }
-      if (form.otp.length < 4) return setError("Enter the 6-digit OTP.");
+      if (form.otp.length < 6) return setError("Enter the 6-digit OTP.");
       setMode("login");
       setOtpSent(false);
     }
