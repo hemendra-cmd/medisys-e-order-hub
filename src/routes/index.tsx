@@ -96,12 +96,12 @@ function AuthCard() {
   const navigate = useNavigate();
   const [mode, setMode] = useState<Mode>("login");
   const [form, setForm] = useState({
-    whatsapp: "",
     email: "",
     organisation: "",
     password: "",
+    confirmPassword: "",
     otp: "",
-  });
+});
   const [otpSent, setOtpSent] = useState(false);
   const [error, setError] = useState("");
 
