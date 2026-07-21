@@ -5,6 +5,7 @@ import { SiteFooter } from "@/components/site/SiteFooter";
 import { actions } from "@/lib/store";
 import { ShieldCheck, Truck, BadgeCheck, HeartPulse } from "lucide-react";
 import bannerImage from "../assets/MEDISYS BANNER.jpeg";
+import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/")({
   component: Landing,
@@ -108,16 +109,39 @@ function AuthCard() {
   const upd = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
     setForm({ ...form, [k]: e.target.value });
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     if (mode === "signup") {
-      if (!form.whatsapp || !form.password) return setError("WhatsApp number and password are required.");
-      actions.signup({
-        whatsapp: form.whatsapp,
-        email: form.email || `${form.whatsapp}@medisys.local`,
-        organisation: form.organisation || "My Organisation",
-      });
+
+  if (
+    !form.organisation ||
+    !form.email ||
+    !form.password ||
+    !form.confirmPassword
+  ) {
+    return setError("Please fill all the fields.");
+  }
+
+  if (form.password !== form.confirmPassword) {
+    return setError("Passwords do not match.");
+  }
+
+  const { data, error } = await supabase.auth.signUp({
+    email: form.email,
+    password: form.password,
+  });
+
+  if (error) {
+    return setError(error.message);
+  }
+
+  alert(
+    "Account created successfully. Please verify your email if required."
+  );
+
+  navigate({ to: "/dashboard" });
+}
       navigate({ to: "/dashboard" });
     } else if (mode === "login") {
       if (!form.email || !form.password) return setError("Email and password are required.");
