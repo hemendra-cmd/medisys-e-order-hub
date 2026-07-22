@@ -2,7 +2,6 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Logo } from "@/components/site/Logo";
 import { SiteFooter } from "@/components/site/SiteFooter";
-import { actions } from "@/lib/store";
 import { ShieldCheck, Truck, BadgeCheck, HeartPulse } from "lucide-react";
 import bannerImage from "../assets/MEDISYS BANNER.jpeg";
 import { supabase } from "@/lib/supabase";
