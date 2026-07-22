@@ -308,7 +308,7 @@ async upsertProduct(p: Product) {
         customer_name: order.organisation,
         organisation: order.organisation,
         phone: order.contact,
-        email: "",
+        email: state.user?.email ?? "",
         address: "",
         city: "",
         total: 0,
