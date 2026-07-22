@@ -17,7 +17,6 @@ import {
   actions,
   useStore,
   type Order,
-  type Product,
 } from "@/lib/store";
 export const Route = createFileRoute("/my-orders")({
   component: MyOrdersPage,
@@ -348,7 +347,7 @@ const handleOrderAgain = (order: Order) => {
   className="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
 >
   Order Again
-</button>>
+</button>
                       </div>
                     </div>
 
