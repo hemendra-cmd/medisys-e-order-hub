@@ -126,42 +126,202 @@ function OrdersPage() {
           )}
 
           {orders.map((o) => {
-            const preparing = o.status === "preparing";
-            return (
-              <div
-                key={o.id}
-                className={`rounded-lg border bg-card p-4 shadow-card ${preparing ? "border-primary/40" : ""}`}
+  const preparing = o.status === "preparing";
+
+  const totalUnits = o.items.reduce(
+    (sum, item) => sum + Number(item.quantity || 1),
+    0,
+  );
+
+  return (
+    <article
+      key={o.id}
+      className={`overflow-hidden rounded-xl border bg-card shadow-card ${
+        preparing ? "border-primary/40" : ""
+      }`}
+    >
+      {/* Order header */}
+      <div className="border-b bg-secondary/20 p-4 sm:p-5">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-2">
+              <span
+                className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ${
+                  preparing
+                    ? "bg-primary/10 text-primary"
+                    : "bg-amber-100 text-amber-700"
+                }`}
               >
-                <div className="flex items-start justify-between gap-4">
-                  <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span
-                        className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase ${
-                          preparing
-                            ? "bg-primary/10 text-primary"
-                            : "bg-success/10 text-success"
-                        }`}
-                      >
-                        {preparing ? <PackageCheck className="h-3 w-3" /> : <Clock className="h-3 w-3" />}
-                        {preparing ? "Under preparation" : "Placed"}
-                      </span>
-                      <span className="text-xs text-muted-foreground">
-                        {new Date(o.createdAt).toLocaleString()}
-                      </span>
-                      {o.contact && (
-                        <span className="text-xs text-muted-foreground">· {o.contact}</span>
-                      )}
-                    </div>
-                    <p className="mt-2 break-words text-sm">
-                      <span className="font-semibold">{o.organisation}</span>
-                      <span className="text-muted-foreground"> — </span>
-                      {o.items.map((i, idx) => (
-                        <span key={idx}>
-                          {idx > 0 && <span className="text-muted-foreground">, </span>}
-                          {i.brand}/{i.name}/{i.packSize}
-                          {i.quantity > 1 && <span className="text-muted-foreground"> x{i.quantity}</span>}
-                        </span>
-                      ))}
+                {preparing ? (
+                  <PackageCheck className="h-3.5 w-3.5" />
+                ) : (
+                  <Clock className="h-3.5 w-3.5" />
+                )}
+
+                {preparing
+                  ? "Under preparation"
+                  : "Order placed"}
+              </span>
+
+              <span className="text-xs text-muted-foreground">
+                {new Date(o.createdAt).toLocaleString(
+                  "en-IN",
+                  {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
+                    hour: "numeric",
+                    minute: "2-digit",
+                  },
+                )}
+              </span>
+            </div>
+
+            <h2 className="mt-3 break-words text-lg font-semibold">
+              {o.organisation || "Unknown organisation"}
+            </h2>
+
+            <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
+              {o.contact && (
+                <span>Contact: {o.contact}</span>
+              )}
+
+              <span>
+                {o.items.length} products · {totalUnits} units
+              </span>
+            </div>
+
+            <p className="mt-1 text-xs text-muted-foreground">
+              Order ID: {o.id}
+            </p>
+          </div>
+
+          <div className="flex shrink-0 items-center gap-2">
+            <button
+              type="button"
+              onClick={async () => {
+                const nextStatus = preparing
+                  ? "placed"
+                  : "preparing";
+
+                const { error } = await supabase
+                  .from("orders")
+                  .update({
+                    status: nextStatus,
+                  })
+                  .eq("id", o.id);
+
+                if (error) {
+                  console.error(error);
+                  alert("Could not update order status.");
+                  return;
+                }
+
+                await loadOrders();
+              }}
+              className={`inline-flex h-10 items-center gap-2 rounded-md border px-3 text-xs font-semibold ${
+                preparing
+                  ? "border-primary bg-primary/10 text-primary"
+                  : "hover:bg-secondary"
+              }`}
+            >
+              {preparing && (
+                <Check className="h-4 w-4" />
+              )}
+
+              {preparing
+                ? "Marked Preparing"
+                : "Mark Preparing"}
+            </button>
+
+            <button
+              type="button"
+              onClick={async () => {
+                if (!confirm("Delete this order?")) {
+                  return;
+                }
+
+                const { error } = await supabase
+                  .from("orders")
+                  .delete()
+                  .eq("id", o.id);
+
+                if (error) {
+                  console.error(error);
+                  alert("Could not delete the order.");
+                  return;
+                }
+
+                await loadOrders();
+              }}
+              className="grid h-10 w-10 place-items-center rounded-md border text-muted-foreground hover:border-red-300 hover:bg-red-50 hover:text-red-600"
+              aria-label="Delete order"
+              title="Delete order"
+            >
+              <Trash2 className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Products */}
+      <div className="p-4 sm:p-5">
+        <h3 className="mb-3 text-sm font-semibold">
+          Ordered products
+        </h3>
+
+        {o.items.length === 0 ? (
+          <p className="rounded-lg border border-dashed p-4 text-sm text-muted-foreground">
+            No products were found for this order.
+          </p>
+        ) : (
+          <div className="divide-y rounded-lg border">
+            {o.items.map((item, index) => (
+              <div
+                key={`${o.id}-${index}`}
+                className="flex items-start justify-between gap-4 p-3 sm:p-4"
+              >
+                <div className="min-w-0">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-primary">
+                    {item.brand || "No brand"}
+                  </p>
+
+                  <p className="mt-1 break-words text-sm font-semibold">
+                    {item.name}
+                  </p>
+
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    Pack size: {item.packSize || "Not specified"}
+                  </p>
+                </div>
+
+                <div className="shrink-0 text-right">
+                  <p className="text-xs text-muted-foreground">
+                    Quantity
+                  </p>
+
+                  <span className="mt-1 inline-flex min-w-10 justify-center rounded-full bg-secondary px-3 py-1 text-sm font-bold">
+                    {item.quantity || 1}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <details className="mt-4">
+          <summary className="cursor-pointer select-none text-xs font-medium text-primary">
+            Show copyable order message
+          </summary>
+
+          <pre className="mt-3 whitespace-pre-wrap rounded-lg bg-secondary p-3 text-xs text-foreground">
+            {formatOrder(o)}
+          </pre>
+        </details>
+      </div>
+    </article>
+  );
+})}
                     </p>
                   </div>
 
