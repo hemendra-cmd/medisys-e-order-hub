@@ -1,14 +1,34 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { createFileRoute, redirect, } from "@tanstack/react-router"; import { useState } from "react";
 import { DashboardHeader } from "@/components/site/DashboardHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
+import { supabase } from "@/lib/supabase";
 import { actions, useStore, type Category, type Product } from "@/lib/store";
 import { Pencil, Trash2, Plus, ArrowLeft } from "lucide-react";
 
+const ADMIN_EMAILS = [
+  "aryanshsaini11@gmail.com",
+  "medisysbpl@rediffmail.com",
+  "medisysbpl@gmail.com",
+];
+
 export const Route = createFileRoute("/admin")({
+  beforeLoad: async () => {
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    const email =
+      session?.user?.email?.toLowerCase() ?? "";
+
+    if (!session || !ADMIN_EMAILS.includes(email)) {
+      throw redirect({
+        to: "/",
+      });
+    }
+  },
+
   component: AdminPage,
 });
-
 const CATS: { id: Category; label: string }[] = [
   { id: "rapid-test", label: "Rapid Test" },
   { id: "biochemistry", label: "Biochemistry" },
