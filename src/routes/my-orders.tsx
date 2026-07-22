@@ -341,13 +341,14 @@ const handleOrderAgain = (order: Order) => {
                           )}
                         </button>
 
-                        <button
-                          type="button"
-                          disabled
-                          className="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground opacity-50"
-                        >
-                          Order Again
-                        </button>
+                       <button
+  type="button"
+  onClick={() => handleOrderAgain(order)}
+  disabled={order.items.length === 0}
+  className="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
+>
+  Order Again
+</button>>
                       </div>
                     </div>
 
