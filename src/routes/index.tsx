@@ -167,14 +167,10 @@ else if (mode === "login") {
     to: adminEmails.includes(email) ? "/orders" : "/dashboard",
   });
 }
-      if (!otpSent) {
-        if (!form.whatsapp) return setError("Enter your WhatsApp number.");
-        setOtpSent(true);
-        return;
-      }
-      if (form.otp.length < 6) return setError("Enter the 6-digit OTP.");
-      setMode("login");
-      setOtpSent(false);
+     else if (mode === "forgot") {
+  setError("Password reset is being configured.");
+  return;
+}
     }
   };
 
