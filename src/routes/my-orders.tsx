@@ -13,16 +13,18 @@ import { DashboardHeader } from "@/components/site/DashboardHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { supabase } from "@/lib/supabase";
 import {
+  actions,
   useStore,
   type Order,
+  type Product,
 } from "@/lib/store";
-
 export const Route = createFileRoute("/my-orders")({
   component: MyOrdersPage,
 });
 
 function MyOrdersPage() {
   const user = useStore((state) => state.user);
+  const products = useStore((state) => state.products);
 
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
