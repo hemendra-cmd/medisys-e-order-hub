@@ -142,12 +142,32 @@ function AuthCard() {
 
   navigate({ to: "/dashboard" });
 }
- else if (mode === "login") {
-      if (!form.email || !form.password) return setError("Email and password are required.");
-      actions.login(form.email);
-      const isAdmin = form.email.trim().toLowerCase().startsWith("medisysone");
-      navigate({ to: isAdmin ? "/orders" : "/dashboard" });
-    } else {
+else if (mode === "login") {
+  if (!form.email || !form.password) {
+    return setError("Email and password are required.");
+  }
+
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email: form.email.trim(),
+    password: form.password,
+  });
+
+  if (error) {
+    return setError(error.message);
+  }
+
+  const email = data.user?.email?.toLowerCase() ?? "";
+
+  const adminEmails = [
+    "aryanshsaini11@gmail.com",
+    "medisysbpl@rediffmail.com",
+    "medisysbpl@gmail.com",
+  ];
+
+  navigate({
+    to: adminEmails.includes(email) ? "/orders" : "/dashboard",
+  });
+}
       if (!otpSent) {
         if (!form.whatsapp) return setError("Enter your WhatsApp number.");
         setOtpSent(true);
