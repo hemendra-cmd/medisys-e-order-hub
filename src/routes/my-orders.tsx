@@ -1,6 +1,7 @@
 import {
   createFileRoute,
   Link,
+  useNavigate,
 } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import {
@@ -25,6 +26,7 @@ export const Route = createFileRoute("/my-orders")({
 function MyOrdersPage() {
   const user = useStore((state) => state.user);
   const products = useStore((state) => state.products);
+  const navigate = useNavigate();
 
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
@@ -145,7 +147,48 @@ function MyOrdersPage() {
       current === orderId ? null : orderId,
     );
   };
+const handleOrderAgain = (order: Order) => {
+  let found = 0;
 
+  order.items.forEach((orderedItem) => {
+    const product = products.find(
+      (p) =>
+        p.brand.toLowerCase() ===
+          orderedItem.brand.toLowerCase() &&
+        p.name.toLowerCase() ===
+          orderedItem.name.toLowerCase() &&
+        p.packSize.toLowerCase() ===
+          orderedItem.packSize.toLowerCase(),
+    );
+
+    if (!product) return;
+
+    const currentQty =
+      useStore
+        .getState()
+        .cart.find(
+          (c) => c.productId === product.id,
+        )?.quantity ?? 0;
+
+    actions.setQuantity(
+      product.id,
+      currentQty + orderedItem.quantity,
+    );
+
+    found++;
+  });
+
+  if (found === 0) {
+    alert(
+      "None of these products are available anymore.",
+    );
+    return;
+  }
+
+  navigate({
+    to: "/cart",
+  });
+};
   return (
     <div className="min-h-screen bg-background">
       <DashboardHeader
