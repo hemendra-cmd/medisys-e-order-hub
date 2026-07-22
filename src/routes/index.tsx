@@ -232,15 +232,33 @@ if (mode === "login") {
   return;
 }
 
-  if (mode === "forgot") {
-    if (!form.email) {
-      setError("Please enter your email address.");
-      return;
-    }
-
-    setError("Password reset is being configured.");
+if (mode === "forgot") {
+  if (!form.email) {
+    setError("Please enter your email address.");
     return;
   }
+
+  const { error } =
+    await supabase.auth.resetPasswordForEmail(
+      form.email.trim(),
+      {
+        redirectTo:
+          "https://www.medisysonline.in/reset-password",
+      }
+    );
+
+  if (error) {
+    setError(error.message);
+    return;
+  }
+
+  alert(
+    "Password reset link sent. Please check your email."
+  );
+
+  setMode("login");
+  return;
+}
 };
   return (
     <div className="rounded-2xl border bg-card p-6 shadow-elevated">
