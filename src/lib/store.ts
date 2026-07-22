@@ -171,12 +171,18 @@ export const actions = {
     state = { ...state, user: u };
     persist();
   },
-  login(email: string) {
-    if (!state.user || state.user.email !== email) {
-      state = { ...state, user: { whatsapp: "", email, organisation: "Demo Organisation" } };
-    }
-    persist();
-  },
+  login(email: string, organisation: string, whatsapp = "") {
+  state = {
+    ...state,
+    user: {
+      email,
+      organisation: organisation.trim(),
+      whatsapp: whatsapp.trim(),
+    },
+  };
+
+  persist();
+},
   logout() {
     state = { ...state, user: null };
     persist();
