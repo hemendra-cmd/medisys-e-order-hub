@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect, } from "@tanstack/react-router";
 import { DashboardHeader } from "@/components/site/DashboardHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { actions, useStore, type Order } from "@/lib/store";
@@ -6,7 +6,28 @@ import { ArrowLeft, Check, Trash2, PackageCheck, Clock } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
+const ADMIN_EMAILS = [
+  "aryanshsaini11@gmail.com",
+  "medisysbpl@rediffmail.com",
+  "medisysbpl@gmail.com",
+];
+
 export const Route = createFileRoute("/orders")({
+  beforeLoad: async () => {
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    const email =
+      session?.user?.email?.toLowerCase() ?? "";
+
+    if (!session || !ADMIN_EMAILS.includes(email)) {
+      throw redirect({
+        to: "/",
+      });
+    }
+  },
+
   component: OrdersPage,
 });
 
