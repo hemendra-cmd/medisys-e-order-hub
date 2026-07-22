@@ -108,72 +108,90 @@ function AuthCard() {
   const upd = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
     setForm({ ...form, [k]: e.target.value });
 
-  const submit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    if (mode === "signup") {
+const submit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setError("");
 
-  if (
-    !form.organisation ||
-    !form.email ||
-    !form.password ||
-    !form.confirmPassword
-  ) {
-    return setError("Please fill all the fields.");
-  }
-
-  if (form.password !== form.confirmPassword) {
-    return setError("Passwords do not match.");
-  }
-
-  const { data, error } = await supabase.auth.signUp({
-    email: form.email,
-    password: form.password,
-  });
-
-  if (error) {
-    return setError(error.message);
-  }
-
-  alert(
-    "Account created successfully. Please verify your email if required."
-  );
-
-  navigate({ to: "/dashboard" });
-}
-else if (mode === "login") {
-  if (!form.email || !form.password) {
-    return setError("Email and password are required.");
-  }
-
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email: form.email.trim(),
-    password: form.password,
-  });
-
-  if (error) {
-    return setError(error.message);
-  }
-
-  const email = data.user?.email?.toLowerCase() ?? "";
-
-  const adminEmails = [
-    "aryanshsaini11@gmail.com",
-    "medisysbpl@rediffmail.com",
-    "medisysbpl@gmail.com",
-  ];
-
-  navigate({
-    to: adminEmails.includes(email) ? "/orders" : "/dashboard",
-  });
-}
-     else if (mode === "forgot") {
-  setError("Password reset is being configured.");
-  return;
-}
+  if (mode === "signup") {
+    if (
+      !form.organisation ||
+      !form.email ||
+      !form.password ||
+      !form.confirmPassword
+    ) {
+      setError("Please fill all the fields.");
+      return;
     }
-  };
 
+    if (form.password !== form.confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+
+    const { error } = await supabase.auth.signUp({
+      email: form.email.trim(),
+      password: form.password,
+      options: {
+        data: {
+          organisation_name: form.organisation.trim(),
+        },
+      },
+    });
+
+    if (error) {
+      setError(error.message);
+      return;
+    }
+
+    alert(
+      "Account created successfully. Please verify your email if required."
+    );
+
+    navigate({ to: "/dashboard" });
+    return;
+  }
+
+  if (mode === "login") {
+    if (!form.email || !form.password) {
+      setError("Email and password are required.");
+      return;
+    }
+
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: form.email.trim(),
+      password: form.password,
+    });
+
+    if (error) {
+      setError(error.message);
+      return;
+    }
+
+    const email = data.user?.email?.toLowerCase() ?? "";
+
+    const adminEmails = [
+      "aryanshsaini11@gmail.com",
+      "medisysbpl@rediffmail.com",
+      "medisysbpl@gmail.com",
+    ];
+
+    navigate({
+      to: adminEmails.includes(email) ? "/orders" : "/dashboard",
+    });
+
+    return;
+  }
+
+  if (mode === "forgot") {
+    if (!form.email) {
+      setError("Please enter your email address.");
+      return;
+    }
+
+    setError("Password reset is being configured.");
+    return;
+  }
+};
   return (
     <div className="rounded-2xl border bg-card p-6 shadow-elevated">
       <div className="mb-5 flex items-center gap-1 rounded-full bg-secondary p-1 text-sm">
