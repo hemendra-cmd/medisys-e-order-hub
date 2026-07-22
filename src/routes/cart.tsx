@@ -71,12 +71,20 @@ function CartPage() {
         return;
       }
 
-      const { data: ordersData, error: ordersError } =
-        await supabase
-          .from("orders")
-          .select("id")
-          .eq("user_id", session.user.id);
+      const customerEmail =
+  session.user.email?.trim().toLowerCase();
 
+if (!customerEmail) {
+  setFrequentProducts([]);
+  setLoadingFrequent(false);
+  return;
+}
+
+const { data: ordersData, error: ordersError } =
+  await supabase
+    .from("orders")
+    .select("id")
+    .ilike("email", customerEmail);
       if (ordersError) {
         console.error(
           "Could not load previous orders:",
