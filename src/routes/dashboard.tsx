@@ -134,8 +134,6 @@ useEffect(() => {
 
       <DashboardHeader query={query} onQueryChange={setQuery} />
 
-      <DashboardHeader query={query} onQueryChange={setQuery} />
-
       <div className="border-b bg-background">
         <div className="mx-auto flex max-w-7xl gap-1 overflow-x-auto px-4 py-2">
           {TABS.map((t) => (
