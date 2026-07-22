@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Logo } from "@/components/site/Logo";
 import { SiteFooter } from "@/components/site/SiteFooter";
+import { actions } from "@/lib/store";
 import { ShieldCheck, Truck, BadgeCheck, HeartPulse } from "lucide-react";
 import bannerImage from "../assets/MEDISYS BANNER.jpeg";
 import { supabase } from "@/lib/supabase";
@@ -150,37 +151,81 @@ const submit = async (e: React.FormEvent) => {
     navigate({ to: "/dashboard" });
     return;
   }
+if (mode === "login") {
+  if (!form.email || !form.password) {
+    setError("Email and password are required.");
+    return;
+  }
 
-  if (mode === "login") {
-    if (!form.email || !form.password) {
-      setError("Email and password are required.");
-      return;
-    }
-
-    const { data, error } = await supabase.auth.signInWithPassword({
+  const { data, error } =
+    await supabase.auth.signInWithPassword({
       email: form.email.trim(),
       password: form.password,
     });
 
-    if (error) {
-      setError(error.message);
+  if (error) {
+    setError(error.message);
+    return;
+  }
+
+  const user = data.user;
+
+  if (!user) {
+    setError("Login succeeded, but user information was not found.");
+    return;
+  }
+
+  const email = user.email?.toLowerCase() ?? "";
+
+  const adminEmails = [
+    "aryanshsaini11@gmail.com",
+    "medisysbpl@rediffmail.com",
+    "medisysbpl@gmail.com",
+  ];
+
+  if (!adminEmails.includes(email)) {
+    const { data: customer, error: customerError } =
+      await supabase
+        .from("customers")
+        .select("organisation_name, whatsapp")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+    if (customerError) {
+      console.error(
+        "Failed to load customer profile:",
+        customerError
+      );
+    }
+
+    const organisation =
+      customer?.organisation_name?.trim() ||
+      String(
+        user.user_metadata?.organisation_name ?? ""
+      ).trim();
+
+    if (!organisation) {
+      setError(
+        "Your organisation information could not be found."
+      );
       return;
     }
 
-    const email = data.user?.email?.toLowerCase() ?? "";
-
-    const adminEmails = [
-      "aryanshsaini11@gmail.com",
-      "medisysbpl@rediffmail.com",
-      "medisysbpl@gmail.com",
-    ];
-
-    navigate({
-      to: adminEmails.includes(email) ? "/orders" : "/dashboard",
-    });
-
-    return;
+    actions.login(
+      email,
+      organisation,
+      customer?.whatsapp ?? ""
+    );
   }
+
+  navigate({
+    to: adminEmails.includes(email)
+      ? "/orders"
+      : "/dashboard",
+  });
+
+  return;
+}
 
   if (mode === "forgot") {
     if (!form.email) {
