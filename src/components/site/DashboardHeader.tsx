@@ -3,6 +3,7 @@ import {
   ShoppingCart,
   LogOut,
   UserRound,
+  Search,
 } from "lucide-react";
 import { Logo } from "./Logo";
 import { selectors, useStore, actions } from "@/lib/store";
@@ -30,16 +31,12 @@ export function DashboardHeader({ query, onQueryChange }: Props) {
           />
         </div>
         <Link
-           to="/my-orders"
-           aria-label="My Orders"
-           title="My Orders"
-          className="inline-flex h-10 items-center gap-2 rounded-md px-2 text-sm font-medium hover:bg-secondary sm:px-3"
-         >
+  to="/my-orders"
+  aria-label="My Orders"
+  title="My Orders"
+  className="relative inline-flex h-10 w-10 items-center justify-center rounded-full hover:bg-secondary"
+>
   <UserRound className="h-5 w-5" />
-
-  <span className="hidden sm:inline">
-    My Orders
-  </span>
 </Link>
         <Link
           to="/cart"
