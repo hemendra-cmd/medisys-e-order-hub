@@ -128,28 +128,33 @@ const submit = async (e: React.FormEvent) => {
       setError("Passwords do not match.");
       return;
     }
+const { error } = await supabase.auth.signUp({
+  email: form.email.trim(),
+  password: form.password,
+  options: {
+    data: {
+      organisation_name: form.organisation.trim(),
+    },
+  },
+});
 
-    const { error } = await supabase.auth.signUp({
-      email: form.email.trim(),
-      password: form.password,
-      options: {
-        data: {
-          organisation_name: form.organisation.trim(),
-        },
-      },
-    });
+if (error) {
+  setError(error.message);
+  return;
+}
 
-    if (error) {
-      setError(error.message);
-      return;
-    }
+alert(
+  "Account created successfully. Please verify your email if required."
+);
 
-    alert(
-      "Account created successfully. Please verify your email if required."
-    );
+actions.signup({
+  email: form.email.trim().toLowerCase(),
+  organisation: form.organisation.trim(),
+  whatsapp: "",
+});
 
-    navigate({ to: "/dashboard" });
-    return;
+navigate({ to: "/dashboard" });
+return;
   }
 if (mode === "login") {
   if (!form.email || !form.password) {
