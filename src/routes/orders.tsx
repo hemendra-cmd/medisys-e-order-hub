@@ -125,7 +125,7 @@ function OrdersPage() {
             </div>
           )}
 
-          {orders.map((o) => {
+           {orders.map((o) => {
   const preparing = o.status === "preparing";
 
   const totalUnits = o.items.reduce(
@@ -321,7 +321,7 @@ function OrdersPage() {
       </div>
     </article>
   );
-})}
+})}                
                     </p>
                   </div>
 
