@@ -321,72 +321,11 @@ function OrdersPage() {
       </div>
     </article>
   );
-})}                
-                    </p>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <label
-                      className={`inline-flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-xs font-medium ${
-                        preparing ? "border-primary bg-primary/5 text-primary" : "hover:bg-secondary"
-                      }`}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={preparing}
-                        onChange={(e) =>
-                          actions.setOrderStatus(o.id, e.target.checked ? "preparing" : "placed")
-                        }
-                        className="h-4 w-4 accent-[var(--color-primary)]"
-                      />
-                      {preparing ? (
-                        <>
-                          <Check className="h-3.5 w-3.5" /> Marked
-                        </>
-                      ) : (
-                        "."
-                      )}
-                    </label>
-                    <button
-                     onClick={async () => {
- 
-                      if (!confirm("Delete this order?")) {
-                        return;
-                      }
-
-                      const { error } = await supabase
-                        .from("orders")
-                        .delete()
-                        .eq("id", o.id);
-
-                      if (error) {
-                        console.error(error);
-                        return;
-                      }
-               
-                      loadOrders();
-               
-                      }}
-                    className="rounded-md p-2 text-muted-foreground hover:bg-secondary hover:text-primary"
-                    aria-label="Delete order"
-                   >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
-                  </div>
-                </div>
-
-                <details className="mt-3 text-xs text-muted-foreground">
-                  <summary className="cursor-pointer select-none">Copyable message</summary>
-                  <pre className="mt-2 whitespace-pre-wrap rounded-md bg-secondary p-2 text-[11px] text-foreground">
-{formatOrder(o)}
-                  </pre>
-                </details>
-              </div>
-            );
-          })}
+})} 
         </div>
       </div>
+
       <SiteFooter />
     </div>
   );
-}
+} 
