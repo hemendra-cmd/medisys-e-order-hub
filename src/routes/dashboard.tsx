@@ -3,7 +3,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { DashboardHeader } from "@/components/site/DashboardHeader";
 import { actions, useStore, type Category, type Product,  type Order,} from "@/lib/store";
 import { SiteFooter } from "@/components/site/SiteFooter";
-import { actions, useStore, type Category, type Product } from "@/lib/store";
 import { ChevronDown, Minus, Plus, Tag, X } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
@@ -98,72 +97,6 @@ useEffect(() => {
       }
     }
 
-    <DashboardHeader query={query} onQueryChange={setQuery} />
-
-    <section className="border-b bg-muted/30">
-  <div className="mx-auto max-w-7xl px-4 py-6">
-    <div className="flex items-center justify-between">
-      <div>
-        <h2 className="font-display text-xl font-semibold">
-          Your previous orders
-        </h2>
-
-        <p className="mt-1 text-sm text-muted-foreground">
-          Orders placed using {user?.email}
-        </p>
-      </div>
-    </div>
-
-    {ordersLoading ? (
-      <div className="mt-4 rounded-lg border bg-card p-5 text-sm text-muted-foreground">
-        Loading your orders...
-      </div>
-    ) : previousOrders.length === 0 ? (
-      <div className="mt-4 rounded-lg border bg-card p-5 text-sm text-muted-foreground">
-        You have not placed any orders yet.
-      </div>
-    ) : (
-      <div className="mt-4 grid gap-3 md:grid-cols-2">
-        {previousOrders.map((order) => (
-          <div
-            key={order.id}
-            className="rounded-lg border bg-card p-4 shadow-card"
-          >
-            <div className="flex items-center justify-between gap-3">
-              <span className="text-xs text-muted-foreground">
-                {new Date(order.createdAt).toLocaleString()}
-              </span>
-
-              <span className="rounded-full bg-primary/10 px-2 py-1 text-[10px] font-semibold uppercase text-primary">
-                {order.status === "preparing"
-                  ? "Under preparation"
-                  : "Placed"}
-              </span>
-            </div>
-
-            <div className="mt-3 space-y-1">
-              {order.items.map((item, index) => (
-                <p
-                  key={`${order.id}-${index}`}
-                  className="text-sm"
-                >
-                  <span className="font-medium">
-                    {item.brand} {item.name}
-                  </span>
-
-                  <span className="text-muted-foreground">
-                    {" "}
-                    — {item.packSize} × {item.quantity}
-                  </span>
-                </p>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
-    )}
-  </div>
-</section>
 
     const mappedOrders: Order[] = (ordersData ?? []).map(
       (order: any) => ({
@@ -200,6 +133,138 @@ useEffect(() => {
     <div className="min-h-screen bg-background pb-16">
 
       <DashboardHeader query={query} onQueryChange={setQuery} />
+
+      <DashboardHeader query={query} onQueryChange={setQuery} />
+
+
+
+    <section className="border-b bg-muted/30">
+
+  <div className="mx-auto max-w-7xl px-4 py-6">
+
+    <div className="flex items-center justify-between">
+
+      <div>
+
+        <h2 className="font-display text-xl font-semibold">
+
+          Your previous orders
+
+        </h2>
+
+
+
+        <p className="mt-1 text-sm text-muted-foreground">
+
+          Orders placed using {user?.email}
+
+        </p>
+
+      </div>
+
+    </div>
+
+
+
+    {ordersLoading ? (
+
+      <div className="mt-4 rounded-lg border bg-card p-5 text-sm text-muted-foreground">
+
+        Loading your orders...
+
+      </div>
+
+    ) : previousOrders.length === 0 ? (
+
+      <div className="mt-4 rounded-lg border bg-card p-5 text-sm text-muted-foreground">
+
+        You have not placed any orders yet.
+
+      </div>
+
+    ) : (
+
+      <div className="mt-4 grid gap-3 md:grid-cols-2">
+
+        {previousOrders.map((order) => (
+
+          <div
+
+            key={order.id}
+
+            className="rounded-lg border bg-card p-4 shadow-card"
+
+          >
+
+            <div className="flex items-center justify-between gap-3">
+
+              <span className="text-xs text-muted-foreground">
+
+                {new Date(order.createdAt).toLocaleString()}
+
+              </span>
+
+
+
+              <span className="rounded-full bg-primary/10 px-2 py-1 text-[10px] font-semibold uppercase text-primary">
+
+                {order.status === "preparing"
+
+                  ? "Under preparation"
+
+                  : "Placed"}
+
+              </span>
+
+            </div>
+
+
+
+            <div className="mt-3 space-y-1">
+
+              {order.items.map((item, index) => (
+
+                <p
+
+                  key={`${order.id}-${index}`}
+
+                  className="text-sm"
+
+                >
+
+                  <span className="font-medium">
+
+                    {item.brand} {item.name}
+
+                  </span>
+
+
+
+                  <span className="text-muted-foreground">
+
+                    {" "}
+
+                    — {item.packSize} × {item.quantity}
+
+                  </span>
+
+                </p>
+
+              ))}
+
+            </div>
+
+          </div>
+
+        ))}
+
+      </div>
+
+    )}
+
+  </div>
+
+</section>
 
       <div className="border-b bg-background">
         <div className="mx-auto flex max-w-7xl gap-1 overflow-x-auto px-4 py-2">
