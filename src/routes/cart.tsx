@@ -31,6 +31,8 @@ function normalise(value: string | undefined) {
 function CartPage() {
   const cart = useStore((s) => s.cart);
   const products = useStore((s) => s.products);
+  console.log("CART PRODUCTS:", products);
+  console.log("CART ITEMS:", cart);
   const navigate = useNavigate();
 
   const [frequentProducts, setFrequentProducts] = useState<
