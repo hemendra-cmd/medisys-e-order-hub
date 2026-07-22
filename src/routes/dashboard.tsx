@@ -1,10 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { DashboardHeader } from "@/components/site/DashboardHeader";
-
+import { actions, useStore, type Category, type Product,  type Order,} from "@/lib/store";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { actions, useStore, type Category, type Product } from "@/lib/store";
 import { ChevronDown, Minus, Plus, Tag, X } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/dashboard")({
   component: Dashboard,
@@ -21,6 +22,9 @@ const TABS: { id: Category; label: string }[] = [
 function Dashboard() {
   const products = useStore((s) => s.products);
   const cart = useStore((s) => s.cart);
+  const user = useStore((s) => s.user);
+  const [previousOrders, setPreviousOrders] = useState<Order[]>([]);
+  const [ordersLoading, setOrdersLoading] = useState(true);
   const [tab, setTab] = useState<Category>("offers");
   const [query, setQuery] = useState("");
   const [brandFilter, setBrandFilter] = useState<string[]>([]);
@@ -45,7 +49,152 @@ function Dashboard() {
   }, [products, tab, brandFilter, packFilter, q]);
 
   const qtyOf = (id: string) => cart.find((c) => c.productId === id)?.quantity ?? 0;
+useEffect(() => {
+  const loadPreviousOrders = async () => {
+    if (!user?.email) {
+      setPreviousOrders([]);
+      setOrdersLoading(false);
+      return;
+    }
 
+    setOrdersLoading(true);
+
+    const { data: ordersData, error: ordersError } =
+      await supabase
+        .from("orders")
+        .select("*")
+        .eq("email", user.email)
+        .order("created_at", { ascending: false });
+
+    if (ordersError) {
+      console.error(
+        "Failed to load previous orders:",
+        ordersError
+      );
+      setOrdersLoading(false);
+      return;
+    }
+
+    const orderIds = (ordersData ?? []).map(
+      (order) => order.id
+    );
+
+    let itemsData: any[] = [];
+
+    if (orderIds.length > 0) {
+      const { data, error: itemsError } =
+        await supabase
+          .from("order_items")
+          .select("*")
+          .in("order_id", orderIds);
+
+      if (itemsError) {
+        console.error(
+          "Failed to load previous order items:",
+          itemsError
+        );
+      } else {
+        itemsData = data ?? [];
+      }
+    }
+
+    <DashboardHeader query={query} onQueryChange={setQuery} />
+
+    <section className="border-b bg-muted/30">
+  <div className="mx-auto max-w-7xl px-4 py-6">
+    <div className="flex items-center justify-between">
+      <div>
+        <h2 className="font-display text-xl font-semibold">
+          Your previous orders
+        </h2>
+
+        <p className="mt-1 text-sm text-muted-foreground">
+          Orders placed using {user?.email}
+        </p>
+      </div>
+    </div>
+
+    {ordersLoading ? (
+      <div className="mt-4 rounded-lg border bg-card p-5 text-sm text-muted-foreground">
+        Loading your orders...
+      </div>
+    ) : previousOrders.length === 0 ? (
+      <div className="mt-4 rounded-lg border bg-card p-5 text-sm text-muted-foreground">
+        You have not placed any orders yet.
+      </div>
+    ) : (
+      <div className="mt-4 grid gap-3 md:grid-cols-2">
+        {previousOrders.map((order) => (
+          <div
+            key={order.id}
+            className="rounded-lg border bg-card p-4 shadow-card"
+          >
+            <div className="flex items-center justify-between gap-3">
+              <span className="text-xs text-muted-foreground">
+                {new Date(order.createdAt).toLocaleString()}
+              </span>
+
+              <span className="rounded-full bg-primary/10 px-2 py-1 text-[10px] font-semibold uppercase text-primary">
+                {order.status === "preparing"
+                  ? "Under preparation"
+                  : "Placed"}
+              </span>
+            </div>
+
+            <div className="mt-3 space-y-1">
+              {order.items.map((item, index) => (
+                <p
+                  key={`${order.id}-${index}`}
+                  className="text-sm"
+                >
+                  <span className="font-medium">
+                    {item.brand} {item.name}
+                  </span>
+
+                  <span className="text-muted-foreground">
+                    {" "}
+                    — {item.packSize} × {item.quantity}
+                  </span>
+                </p>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+</section>
+
+    const mappedOrders: Order[] = (ordersData ?? []).map(
+      (order: any) => ({
+        id: order.id,
+        organisation: order.organisation ?? "",
+        contact: order.phone ?? "",
+        status:
+          order.status === "preparing"
+            ? "preparing"
+            : "placed",
+        createdAt: new Date(order.created_at).getTime(),
+        items: itemsData
+          .filter(
+            (item: any) =>
+              item.order_id === order.id
+          )
+          .map((item: any) => ({
+            brand: item.brand ?? "",
+            name: item.name ?? "",
+            packSize: item.pack_size ?? "",
+            quantity: item.quantity ?? 1,
+          })),
+      })
+    );
+
+    setPreviousOrders(mappedOrders);
+    setOrdersLoading(false);
+  };
+
+  void loadPreviousOrders();
+}, [user?.email]);
 
   return (
     <div className="min-h-screen bg-background pb-16">
