@@ -1,4 +1,5 @@
-import { createFileRoute, redirect, } from "@tanstack/react-router"; import { useState } from "react";
+import { createFileRoute, Link, redirect, } from "@tanstack/react-router"; 
+import { useState } from "react";
 import { DashboardHeader } from "@/components/site/DashboardHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { supabase } from "@/lib/supabase";
