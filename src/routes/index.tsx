@@ -178,7 +178,7 @@ function AuthCard() {
       {mode === "forgot" && (
         <div className="mb-4 text-center">
           <h3 className="font-display text-lg font-semibold">Reset password</h3>
-          <p className="mt-1 text-xs text-muted-foreground">We'll send an OTP to your WhatsApp number.</p>
+          <p className="mt-1 text-xs text-muted-foreground">We'll send a password reset link to your email address.</p>
         </div>
       )}
 
@@ -224,7 +224,13 @@ function AuthCard() {
           </>
        )}
         {mode === "forgot" && !otpSent && (
-          <Field label="WhatsApp number" value={form.whatsapp} onChange={upd("whatsapp")} placeholder="+91 98xxxxxxxx" />
+          <Field
+            label="Email Address"
+            type="email"
+            value={form.email}
+            onChange={upd("email")}
+            placeholder="you@lab.com"
+         />
         )}
         {mode === "forgot" && otpSent && (
           <>
