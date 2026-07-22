@@ -1,5 +1,9 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { ShoppingCart, Search, LogOut } from "lucide-react";
+import {
+  ShoppingCart,
+  LogOut,
+  UserRound,
+} from "lucide-react";
 import { Logo } from "./Logo";
 import { selectors, useStore, actions } from "@/lib/store";
 
@@ -25,6 +29,18 @@ export function DashboardHeader({ query, onQueryChange }: Props) {
             className="h-10 w-full rounded-full border bg-secondary pl-10 pr-4 text-sm outline-none ring-primary/40 focus:bg-background focus:ring-2"
           />
         </div>
+        <Link
+           to="/my-orders"
+           aria-label="My Orders"
+           title="My Orders"
+          className="inline-flex h-10 items-center gap-2 rounded-md px-2 text-sm font-medium hover:bg-secondary sm:px-3"
+         >
+  <UserRound className="h-5 w-5" />
+
+  <span className="hidden sm:inline">
+    My Orders
+  </span>
+</Link>
         <Link
           to="/cart"
           className="relative inline-flex h-10 w-10 items-center justify-center rounded-full text-foreground hover:bg-secondary"
