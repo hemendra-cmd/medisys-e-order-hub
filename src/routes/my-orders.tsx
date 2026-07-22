@@ -19,18 +19,6 @@ import {
 } from "@/lib/store";
 
 export const Route = createFileRoute("/my-orders")({
-  beforeLoad: async () => {
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-
-    if (!session) {
-      throw redirect({
-        to: "/",
-      });
-    }
-  },
-
   component: MyOrdersPage,
 });
 
