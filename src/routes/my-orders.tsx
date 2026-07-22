@@ -25,6 +25,7 @@ export const Route = createFileRoute("/my-orders")({
 function MyOrdersPage() {
   const user = useStore((state) => state.user);
   const products = useStore((state) => state.products);
+  const cart = useStore((state) => state.cart);
   const navigate = useNavigate();
 
   const [orders, setOrders] = useState<Order[]>([]);
@@ -163,11 +164,9 @@ const handleOrderAgain = (order: Order) => {
     if (!product) return;
 
     const currentQty =
-      useStore
-        .getState()
-        .cart.find(
-          (c) => c.productId === product.id,
-        )?.quantity ?? 0;
+  cart.find(
+    (c) => c.productId === product.id,
+  )?.quantity ?? 0;
 
     actions.setQuantity(
       product.id,
