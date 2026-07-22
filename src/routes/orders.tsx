@@ -87,7 +87,7 @@ function OrdersPage() {
         items,
         status:
           order.status === "preparing"
-            ? "preparing"
+            ? "IN PROCESS"
             : "placed",
         createdAt: new Date(
           order.created_at
