@@ -227,6 +227,17 @@ export const actions = {
   persist();
 },
 
+clearCart() {
+  state = {
+    ...state,
+    cart: [],
+  };
+
+  persist();
+},
+
+async upsertProduct(p: Product) {
+
 async upsertProduct(p: Product) {
   if (isSupabaseConfigured && supabase) {
     const { error } = await supabase
