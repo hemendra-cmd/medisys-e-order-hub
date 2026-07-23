@@ -3,8 +3,17 @@ import { useState } from "react";
 import { Logo } from "@/components/site/Logo";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { actions } from "@/lib/store";
-import { ShieldCheck, Truck, BadgeCheck, HeartPulse } from "lucide-react";
+import {
+  ShieldCheck,
+  Truck,
+  BadgeCheck,
+  HeartPulse,
+  GraduationCap,
+  Linkedin,
+  Star,
+} from "lucide-react";
 import bannerImage from "../assets/MEDISYS BANNER.jpeg";
+import founderImage from "../assets/founder.jpeg.jpg";
 import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/")({
@@ -82,6 +91,117 @@ function Landing() {
                 <div className="mt-1 text-sm text-muted-foreground whitespace-pre-line">{x.s}</div>
               </div>
             ))}
+          </div>
+                    <div className="mt-12 border-t pt-10">
+            <div className="grid gap-8 md:grid-cols-[220px_1fr] md:items-start">
+              <div className="mx-auto w-full max-w-[220px]">
+                <img
+                  src={founderImage}
+                  alt="Hemendra Saini, Founder and Managing Director of Medisys"
+                  className="aspect-[4/5] w-full rounded-xl border object-cover shadow-card"
+                />
+
+                <div className="mt-4 text-center">
+                  <h3 className="font-display text-xl font-semibold">
+                    Hemendra Saini
+                  </h3>
+
+                  <p className="mt-1 text-sm font-medium text-primary">
+                    Founder & Managing Director
+                  </p>
+
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    Founded Medisys in 2009
+                  </p>
+                </div>
+              </div>
+
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-widest text-primary">
+                  Our Leadership
+                </p>
+
+                <h3 className="mt-2 font-display text-2xl font-semibold">
+                  About the Founder
+                </h3>
+
+                <p className="mt-4 max-w-3xl leading-7 text-muted-foreground">
+                  Hemendra Saini founded Medisys in 2009 with a vision to provide
+                  reliable diagnostic products and laboratory solutions. With
+                  extensive experience in the field, he has built Medisys on the
+                  principles of quality, trust, customer satisfaction, and
+                  long-term partnerships, making it a trusted name in the
+                  diagnostics industry.
+                </p>
+
+                <div className="mt-6 rounded-xl border bg-card p-5 shadow-card">
+                  <h4 className="flex items-center gap-2 font-display text-lg font-semibold">
+                    <GraduationCap className="h-5 w-5 text-primary" />
+                    Education
+                  </h4>
+
+                  <div className="mt-4 space-y-4">
+                    <div>
+                      <p className="font-medium">
+                        Master of Business Administration, Marketing
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        Awadhesh Pratap Singh University, Rewa
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        1997 – 1999
+                      </p>
+                    </div>
+
+                    <div>
+                      <p className="font-medium">
+                        Master of Science, Mathematics and Computer Science
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        Samrat Ashok Technological Institute
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        1995 – 1997
+                      </p>
+                    </div>
+
+                    <div>
+                      <p className="font-medium">
+                        Bachelor of Science, Mathematics
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        Dr. Hari Singh Gour University, Sagar
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        1992 – 1995
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-6 flex flex-wrap gap-3">
+                  <a
+                    href="https://www.linkedin.com/in/hemendra-saini-20471533b/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary-hover"
+                  >
+                    <Linkedin className="h-4 w-4" />
+                    Contact on LinkedIn
+                  </a>
+
+                  <a
+                    href="https://g.page/r/CTz0M49OlhLVEBM/review"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 rounded-md border bg-background px-4 py-2.5 text-sm font-semibold hover:bg-secondary"
+                  >
+                    <Star className="h-4 w-4 text-primary" />
+                    Rate Medisys on Google
+                  </a>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
