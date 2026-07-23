@@ -237,8 +237,6 @@ clearCart() {
 },
 
 async upsertProduct(p: Product) {
-
-async upsertProduct(p: Product) {
   if (isSupabaseConfigured && supabase) {
     const { error } = await supabase
       .from("products")
