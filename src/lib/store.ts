@@ -198,17 +198,32 @@ export const actions = {
     persist();
   },
   setQuantity(productId: string, qty: number) {
-    state = {
-      ...state,
-      cart:
-        qty <= 0
-          ? state.cart.filter((c) => c.productId !== productId)
-          : state.cart.map((c) => (c.productId === productId ? { ...c, quantity: qty } : c)),
-    };
-    persist();
-  },
-  clearCart() {
-  state = { ...state, cart: [] };
+  const exists = state.cart.some(
+    (item) => item.productId === productId
+  );
+
+  state = {
+    ...state,
+    cart:
+      qty <= 0
+        ? state.cart.filter(
+            (item) => item.productId !== productId
+          )
+        : exists
+          ? state.cart.map((item) =>
+              item.productId === productId
+                ? { ...item, quantity: qty }
+                : item
+            )
+          : [
+              ...state.cart,
+              {
+                productId,
+                quantity: qty,
+              },
+            ],
+  };
+
   persist();
 },
 
