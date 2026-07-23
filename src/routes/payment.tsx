@@ -15,6 +15,7 @@ function PaymentPage() {
   const products = useStore((s) => s.products);
   const [placedOrderId, setPlacedOrderId] = useState<string | null>(null);
   const placedOrder = useStore((s) => s.orders.find((o) => o.id === placedOrderId) ?? null);
+  const [placingOrder, setPlacingOrder] = useState(false);
   const navigate = useNavigate();
 
   const items = cart
@@ -23,6 +24,10 @@ function PaymentPage() {
   const totalItems = items.reduce((n, i) => n + i.quantity, 0);
 
   const placeOrder = async () => {
+  if (placingOrder) return;
+
+  setPlacingOrder(true);
+
   const org = user?.organisation ?? "Guest";
 
   const contact =
@@ -37,20 +42,26 @@ function PaymentPage() {
     quantity: i.quantity,
   }));
 
-  const id = await actions.addOrder({
-    organisation: org,
-    contact,
-    items: orderItems,
-  });
+  try {
+    const id = await actions.addOrder({
+      organisation: org,
+      contact,
+      items: orderItems,
+    });
 
-  if (!id) {
+    if (!id) {
+      alert("Failed to place order.");
+      setPlacingOrder(false);
+      return;
+    }
+
+    actions.clearCart();
+    setPlacedOrderId(id);
+  } catch (error) {
+    console.error(error);
     alert("Failed to place order.");
-    return;
+    setPlacingOrder(false);
   }
-
-  actions.clearCart();
-
-  setPlacedOrderId(id);
 };
 
   if (placedOrder) {
@@ -145,11 +156,13 @@ function PaymentPage() {
         </div>
 
         <button
-          onClick={placeOrder}
-          className="mt-6 h-11 w-full rounded-md bg-primary font-semibold text-primary-foreground hover:bg-primary-hover"
-        >
-          Place order
-        </button>
+  type="button"
+  onClick={placeOrder}
+  disabled={placingOrder}
+  className="mt-6 h-11 w-full rounded-md bg-primary font-semibold text-primary-foreground hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
+>
+  {placingOrder ? "Placing order..." : "Place order"}
+</button>
       </div>
 
       <SiteFooter />
