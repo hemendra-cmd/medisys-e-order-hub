@@ -172,14 +172,19 @@ function Landing() {
     </div>
   </div>
 </section>
-<section className="bg-background py-20">
+<section className="bg-background py-10 sm:py-14 md:py-20"> 
   <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-     <div className="relative overflow-hidden rounded-[2rem] border bg-card shadow-sm">
+     <div className="relative overflow-hidden rounded-2xl border bg-card shadow-sm animate-fade-up-delay-2 sm:rounded-[2rem]">
       <img
-        src={bannerImage}
-        alt="Medisys — Celebrating 17 years of trust"
-        className="h-[280px] w-full object-cover sm:h-[380px] lg:h-[500px]"
-      />
+  src={bannerImage}
+  alt="Medisys — Celebrating 17 years of trust"
+  className="
+    h-[210px] w-full object-cover object-center
+    sm:h-[300px]
+    md:h-[380px]
+    lg:h-[500px]
+  "
+/>
 
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/45 via-black/10 to-transparent" />
 
