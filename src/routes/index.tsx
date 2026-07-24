@@ -341,7 +341,46 @@ function Landing() {
     </div>
   </div>
 </section>  
-      
+      <section className="bg-secondary/20 py-24">
+  <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+
+    <div className="text-center">
+      <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">
+        Our Partners
+      </p>
+
+      <h2 className="mt-4 text-4xl font-display font-semibold">
+        Trusted Global Brands
+      </h2>
+
+      <p className="mx-auto mt-6 max-w-3xl text-lg text-muted-foreground">
+        We proudly supply products from internationally recognised
+        diagnostic and laboratory manufacturers.
+      </p>
+    </div>
+
+    <div className="mt-16 grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-6">
+
+      {[
+        "AGAPPE",
+        "SD BIOSENSOR",
+        "ERBA",
+        "ABBOTT",
+        "ROCHE",
+        "SIEMENS",
+      ].map((brand) => (
+        <div
+          key={brand}
+          className="flex h-28 items-center justify-center rounded-3xl border bg-card text-center text-lg font-semibold shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
+        >
+          {brand}
+        </div>
+      ))}
+
+    </div>
+
+  </div>
+</section>
       <SiteFooter />
     </div>
   );
