@@ -321,7 +321,7 @@ function Landing() {
         </h3>
 
         <p className="mt-3 text-muted-foreground">
-          Quick dispatch and dependable logistics across India.
+          Quick dispatch and dependable logistics.
         </p>
       </div>
 
@@ -333,7 +333,7 @@ function Landing() {
         </h3>
 
         <p className="mt-3 text-muted-foreground">
-          Every product is sourced directly from trusted suppliers.
+          Every product is sourced directly from trusted manufacturers.
         </p>
       </div>
 
@@ -374,11 +374,11 @@ function Landing() {
 
       {[
         "AGAPPE",
-        "SD BIOSENSOR",
-        "ERBA",
-        "ABBOTT",
-        "ROCHE",
-        "SIEMENS",
+        "MATRIX LABS",
+        "BODITECH",
+        "RECKON",
+        "PEERLESS",
+        "NASMED",
       ].map((brand) => (
         <div
           key={brand}
