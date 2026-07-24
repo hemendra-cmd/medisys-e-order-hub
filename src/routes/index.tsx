@@ -504,7 +504,7 @@ function Landing() {
         {
           review:
             "Medisys has consistently provided reliable diagnostic products and quick support whenever required.",
-          name: "Dr.Paaras Kothari",
+          name: "Dr.Paras Kothari",
           location: "Bhopal, Madhya Pradesh",
         },
         {
