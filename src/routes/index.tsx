@@ -317,7 +317,7 @@ function Landing() {
         <Truck className="h-10 w-10 text-primary" />
 
         <h3 className="mt-5 text-xl font-semibold">
-          Fast Delivery
+          Fast Delivery.Free Delivery
         </h3>
 
         <p className="mt-3 text-muted-foreground">
