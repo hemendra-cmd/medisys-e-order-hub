@@ -269,6 +269,79 @@ function Landing() {
     </div>
   </div>
 </section>
+    <section id="why-medisys" className="py-24 bg-background">
+  <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+
+    <div className="text-center">
+      <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">
+        Why Choose Medisys
+      </p>
+
+      <h2 className="mt-4 text-4xl font-display font-semibold">
+        Everything your laboratory needs.
+      </h2>
+
+      <p className="mx-auto mt-6 max-w-3xl text-lg text-muted-foreground">
+        We combine trusted diagnostic brands, responsive customer service,
+        nationwide supply and competitive pricing to help laboratories
+        operate efficiently every day.
+      </p>
+    </div>
+
+    <div className="mt-16 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+
+      <div className="rounded-3xl border bg-card p-8 shadow-sm hover:shadow-xl transition-all">
+        <ShieldCheck className="h-10 w-10 text-primary" />
+
+        <h3 className="mt-5 text-xl font-semibold">
+          Trusted Brands
+        </h3>
+
+        <p className="mt-3 text-muted-foreground">
+          Only genuine products from leading diagnostic manufacturers.
+        </p>
+      </div>
+
+      <div className="rounded-3xl border bg-card p-8 shadow-sm hover:shadow-xl transition-all">
+        <Truck className="h-10 w-10 text-primary" />
+
+        <h3 className="mt-5 text-xl font-semibold">
+          Fast Delivery
+        </h3>
+
+        <p className="mt-3 text-muted-foreground">
+          Quick dispatch and dependable logistics across India.
+        </p>
+      </div>
+
+      <div className="rounded-3xl border bg-card p-8 shadow-sm hover:shadow-xl transition-all">
+        <BadgeCheck className="h-10 w-10 text-primary" />
+
+        <h3 className="mt-5 text-xl font-semibold">
+          Quality Assured
+        </h3>
+
+        <p className="mt-3 text-muted-foreground">
+          Every product is sourced directly from trusted suppliers.
+        </p>
+      </div>
+
+      <div className="rounded-3xl border bg-card p-8 shadow-sm hover:shadow-xl transition-all">
+        <HeartPulse className="h-10 w-10 text-primary" />
+
+        <h3 className="mt-5 text-xl font-semibold">
+          Expert Support
+        </h3>
+
+        <p className="mt-3 text-muted-foreground">
+          Our experienced team helps you choose the right products.
+        </p>
+      </div>
+
+    </div>
+  </div>
+</section>  
+      
       <SiteFooter />
     </div>
   );
