@@ -13,7 +13,7 @@ import {
   Star,
 } from "lucide-react";
 import bannerImage from "../assets/MEDISYS BANNER.jpeg";
-import founderImage from "../assets/founder.jpeg.jpg";
+import founderImage from "../assets/founder.jpeg";
 import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/")({
