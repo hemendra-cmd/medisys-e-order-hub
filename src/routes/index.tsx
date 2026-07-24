@@ -62,7 +62,7 @@ function Landing() {
   />
 
   <div className="relative mx-auto grid min-h-[760px] max-w-7xl items-center gap-14 px-4 py-16 sm:px-6 md:grid-cols-2 md:py-24 lg:px-8">
-    <div className="flex flex-col justify-center">
+    <div className="flex flex-col justify-center animate-fade-up">
       <div className="inline-flex w-fit items-center gap-2 rounded-full border bg-background/80 px-4 py-2 shadow-sm backdrop-blur">
         <HeartPulse className="h-4 w-4 text-primary" />
         <span className="text-sm font-medium">
@@ -146,9 +146,9 @@ function Landing() {
     </div>
 
     <div
-      id="login"
-      className="mx-auto w-full max-w-md scroll-mt-28"
-    >
+  id="login"
+  className="mx-auto w-full max-w-md scroll-mt-28 animate-fade-up-delay-1"
+>
       <div className="mb-5 text-center md:text-left">
         <p className="text-sm font-semibold text-primary">
           Medisys Online Ordering
@@ -174,7 +174,7 @@ function Landing() {
 </section>
 <section className="bg-background py-20">
   <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-    <div className="relative overflow-hidden rounded-[2rem] border bg-card shadow-sm">
+     <div className="relative overflow-hidden rounded-[2rem] border bg-card shadow-sm">
       <img
         src={bannerImage}
         alt="Medisys — Celebrating 17 years of trust"
@@ -511,7 +511,7 @@ function Landing() {
       ].map((testimonial) => (
         <div
           key={testimonial.review}
-          className="group rounded-3xl border bg-card p-8 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
+          className="group animate-fade-up rounded-3xl border bg-card p-8 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
         >
           <div className="flex gap-1">
             {[1, 2, 3, 4, 5].map((star) => (
