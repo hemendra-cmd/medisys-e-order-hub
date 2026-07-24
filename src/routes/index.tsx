@@ -172,7 +172,103 @@ function Landing() {
     </div>
   </div>
 </section>
+<section className="bg-background py-20">
+  <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div className="relative overflow-hidden rounded-[2rem] border bg-card shadow-sm">
+      <img
+        src={bannerImage}
+        alt="Medisys — Celebrating 17 years of trust"
+        className="h-[280px] w-full object-cover sm:h-[380px] lg:h-[500px]"
+      />
 
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/45 via-black/10 to-transparent" />
+
+      <div className="absolute inset-0 flex items-end">
+        <div className="max-w-2xl p-6 text-white sm:p-10 lg:p-14">
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-white/80">
+            Medisys
+          </p>
+
+          <h2 className="mt-3 font-display text-3xl font-semibold leading-tight sm:text-4xl lg:text-5xl">
+            Trusted diagnostic solutions for modern laboratories
+          </h2>
+
+          <p className="mt-4 max-w-xl text-sm leading-6 text-white/85 sm:text-base">
+            Reliable products, professional service and long-term partnerships
+            built over more than 17 years.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="about" className="border-y bg-secondary/30 py-24 scroll-mt-24">
+  <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div className="mx-auto max-w-3xl text-center">
+      <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">
+        About Medisys
+      </p>
+
+      <h2 className="mt-4 font-display text-4xl font-semibold tracking-tight sm:text-5xl">
+        Powering Modern Laboratories
+      </h2>
+
+      <p className="mt-6 text-lg leading-8 text-muted-foreground">
+        Since 2009, Medisys has supported laboratories, clinics and hospitals
+        with dependable diagnostic products, trusted brands and responsive
+        service. Our focus is simple: make laboratory procurement faster,
+        easier and more reliable.
+      </p>
+    </div>
+
+    <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      {[
+        {
+          value: "17+",
+          label: "Years of Excellence",
+          description:
+            "Serving laboratories and healthcare professionals since 2009.",
+        },
+        {
+          value: "500+",
+          label: "Laboratories Served",
+          description:
+            "Trusted by diagnostic centres, clinics and hospitals.",
+        },
+        {
+          value: "2,500+",
+          label: "Diagnostic Products",
+          description:
+            "A broad catalogue of equipment, reagents and consumables.",
+        },
+        {
+          value: "100%",
+          label: "Authentic Brands",
+          description:
+            "Products sourced from trusted and established manufacturers.",
+        },
+      ].map((item) => (
+        <div
+          key={item.label}
+          className="rounded-3xl border bg-card p-7 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
+        >
+          <div className="font-display text-4xl font-semibold tracking-tight text-primary">
+            {item.value}
+          </div>
+
+          <h3 className="mt-3 text-base font-semibold">
+            {item.label}
+          </h3>
+
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">
+            {item.description}
+          </p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
       <SiteFooter />
     </div>
   );
