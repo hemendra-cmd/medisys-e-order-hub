@@ -124,3 +124,47 @@
     letter-spacing: -0.01em;
   }
 }
+html {
+  scroll-behavior: smooth;
+}
+
+@keyframes medisys-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: medisys-fade-up 0.7s ease-out both;
+}
+
+.animate-fade-up-delay-1 {
+  animation: medisys-fade-up 0.7s ease-out 0.12s both;
+}
+
+.animate-fade-up-delay-2 {
+  animation: medisys-fade-up 0.7s ease-out 0.24s both;
+}
+
+.animate-fade-up-delay-3 {
+  animation: medisys-fade-up 0.7s ease-out 0.36s both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .animate-fade-up,
+  .animate-fade-up-delay-1,
+  .animate-fade-up-delay-2,
+  .animate-fade-up-delay-3 {
+    animation: none;
+  }
+}
