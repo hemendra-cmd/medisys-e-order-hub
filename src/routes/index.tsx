@@ -172,6 +172,25 @@ function Landing() {
     </div>
   </div>
 </section>
+      <div className="flex flex-col items-center py-8">
+  <p className="animate-pulse text-sm font-semibold uppercase tracking-[0.25em] text-primary">
+    Discover Medisys
+  </p>
+
+  <svg
+    className="mt-4 h-8 w-8 animate-bounce text-primary"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    viewBox="0 0 24 24"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M12 5v14m0 0l-6-6m6 6l6-6"
+    />
+  </svg>
+</div>
      <section className="bg-background py-10 sm:py-14 md:py-20">
   <div className="w-full">
     <div className="relative overflow-hidden border-y bg-card shadow-sm animate-fade-up-delay-2">
