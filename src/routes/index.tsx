@@ -186,24 +186,19 @@ function Landing() {
   "
 />
 
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/45 via-black/10 to-transparent" />
-
-      <div className="absolute inset-0 flex items-end">
-        <div className="max-w-2xl p-6 text-white sm:p-10 lg:p-14">
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-white/80">
-            Medisys
-          </p>
-
-          <h2 className="mt-3 font-display text-3xl font-semibold leading-tight sm:text-4xl lg:text-5xl">
-            Trusted diagnostic solutions for modern laboratories
-          </h2>
-
-          <p className="mt-4 max-w-xl text-sm leading-6 text-white/85 sm:text-base">
-            Reliable products, professional service and long-term partnerships
-            built over more than 17 years.
-          </p>
-        </div>
-      </div>
+     <section className="bg-background py-10 sm:py-14 md:py-20">
+  <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div className="relative overflow-hidden rounded-2xl border bg-card shadow-sm animate-fade-up-delay-2 sm:rounded-[2rem]">
+      <img
+        src={bannerImage}
+        alt="Medisys — Celebrating 17 years of trust"
+        className="
+          h-[210px] w-full object-cover object-center
+          sm:h-[300px]
+          md:h-[380px]
+          lg:h-[500px]
+        "
+      />
     </div>
   </div>
 </section>
