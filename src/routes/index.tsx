@@ -472,6 +472,125 @@ function Landing() {
   </div>
 </section>
       <SiteFooter />
+      <section className="border-y bg-secondary/20 py-24">
+  <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div className="mx-auto max-w-3xl text-center">
+      <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">
+        Customer Experiences
+      </p>
+
+      <h2 className="mt-4 font-display text-4xl font-semibold tracking-tight sm:text-5xl">
+        Trusted by healthcare professionals
+      </h2>
+
+      <p className="mt-6 text-lg leading-8 text-muted-foreground">
+        Laboratories and healthcare teams rely on Medisys for genuine
+        products, responsive support and dependable service.
+      </p>
+    </div>
+
+    <div className="mt-16 grid gap-6 md:grid-cols-3">
+      {[
+        {
+          review:
+            "Medisys has consistently provided reliable diagnostic products and quick support whenever required.",
+          name: "Diagnostic Laboratory",
+          location: "Bhopal, Madhya Pradesh",
+        },
+        {
+          review:
+            "The ordering process is simple and the team is very responsive. Product availability and service have been excellent.",
+          name: "Healthcare Professional",
+          location: "Madhya Pradesh",
+        },
+        {
+          review:
+            "We value Medisys for genuine products, professional communication and dependable delivery.",
+          name: "Laboratory Customer",
+          location: "Central India",
+        },
+      ].map((testimonial) => (
+        <div
+          key={testimonial.review}
+          className="group rounded-3xl border bg-card p-8 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
+        >
+          <div className="flex gap-1">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <Star
+                key={star}
+                className="h-5 w-5 fill-primary text-primary"
+              />
+            ))}
+          </div>
+
+          <p className="mt-6 text-base leading-7 text-muted-foreground">
+            “{testimonial.review}”
+          </p>
+
+          <div className="mt-8 border-t pt-5">
+            <p className="font-semibold">{testimonial.name}</p>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {testimonial.location}
+            </p>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <div className="mt-12 text-center">
+      <a
+        href="https://g.page/r/CTz0M49OlhLVEBM/review"
+        target="_blank"
+        rel="noreferrer"
+        className="inline-flex items-center gap-2 rounded-full border bg-background px-6 py-3 font-semibold transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+      >
+        <Star className="h-5 w-5 fill-primary text-primary" />
+        Share Your Experience
+      </a>
+    </div>
+  </div>
+</section>
+
+<section className="bg-background py-24">
+  <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div className="relative overflow-hidden rounded-[2.5rem] bg-primary px-6 py-16 text-center text-primary-foreground shadow-xl sm:px-12 lg:px-20 lg:py-20">
+      <div className="pointer-events-none absolute -left-20 -top-20 h-64 w-64 rounded-full bg-white/10 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-24 -right-16 h-72 w-72 rounded-full bg-white/10 blur-3xl" />
+
+      <div className="relative mx-auto max-w-3xl">
+        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary-foreground/75">
+          Start Ordering Online
+        </p>
+
+        <h2 className="mt-4 font-display text-4xl font-semibold tracking-tight sm:text-5xl">
+          Ready to simplify your laboratory procurement?
+        </h2>
+
+        <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-primary-foreground/80">
+          Create your Medisys account to explore diagnostic products, place
+          orders and manage your laboratory requirements from one convenient
+          platform.
+        </p>
+
+        <div className="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
+          <a
+            href="#login"
+            className="inline-flex items-center justify-center rounded-full bg-background px-7 py-3.5 font-semibold text-foreground transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+          >
+            Create an Account
+          </a>
+
+          <a
+            href="#login"
+            className="inline-flex items-center justify-center rounded-full border border-primary-foreground/30 px-7 py-3.5 font-semibold transition-all duration-300 hover:-translate-y-1 hover:bg-primary-foreground/10"
+          >
+            Login to Medisys
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
     </div>
   );
 }
