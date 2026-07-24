@@ -504,20 +504,20 @@ function Landing() {
         {
           review:
             "Medisys has consistently provided reliable diagnostic products and quick support whenever required.",
-          name: "Diagnostic Laboratory",
+          name: "Dr.Paaras Kothari",
           location: "Bhopal, Madhya Pradesh",
         },
         {
           review:
             "The ordering process is simple and the team is very responsive. Product availability and service have been excellent.",
-          name: "Healthcare Professional",
-          location: "Madhya Pradesh",
+          name: "Dr.Sunil Surange",
+          location: "Bhopal, Madhya Pradesh",
         },
         {
           review:
             "We value Medisys for genuine products, professional communication and dependable delivery.",
-          name: "Laboratory Customer",
-          location: "Central India",
+          name: "Dr.Smita Rathi",
+          location: "Betul, Madhya Pradesh",
         },
       ].map((testimonial) => (
         <div
