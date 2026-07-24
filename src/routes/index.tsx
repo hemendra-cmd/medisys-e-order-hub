@@ -172,24 +172,30 @@ function Landing() {
     </div>
   </div>
 </section>
-      <div className="flex flex-col items-center py-8">
-  <p className="animate-pulse text-sm font-semibold uppercase tracking-[0.25em] text-primary">
-    Discover Medisys
+      <div className="relative flex flex-col items-center py-10">
+  <div className="mb-4 h-px w-40 bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+
+  <p className="animate-pulse text-sm font-semibold uppercase tracking-[0.35em] text-primary">
+    Discover More
   </p>
 
-  <svg
-    className="mt-4 h-8 w-8 animate-bounce text-primary"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    viewBox="0 0 24 24"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M12 5v14m0 0l-6-6m6 6l6-6"
-    />
-  </svg>
+  <div className="mt-5 flex h-12 w-12 animate-bounce items-center justify-center rounded-full border border-primary/40 bg-primary/5 shadow-lg">
+    <svg
+      className="h-6 w-6 text-primary"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M7 10l5 5 5-5"
+      />
+    </svg>
+  </div>
+
+  <div className="mt-4 h-px w-40 bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
 </div>
      <section className="bg-background py-10 sm:py-14 md:py-20">
   <div className="w-full">
