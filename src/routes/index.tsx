@@ -9,7 +9,7 @@ import {
   BadgeCheck,
   HeartPulse,
   GraduationCap,
-  LinkedinIcon,
+  ExternalLink,
   Star,
 } from "lucide-react";
 import bannerImage from "../assets/MEDISYS BANNER.jpeg";
@@ -453,7 +453,7 @@ function Landing() {
             rel="noreferrer"
             className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 font-semibold text-primary-foreground transition-all hover:-translate-y-1 hover:shadow-lg"
           >
-            <LinkedinIcon className="h-5 w-5" />
+            <ExternalLink className="h-5 w-5" />
             View LinkedIn
           </a>
 
