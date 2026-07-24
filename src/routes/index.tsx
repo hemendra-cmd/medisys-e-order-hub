@@ -71,9 +71,9 @@ function Landing() {
       </div>
 
       <h1 className="mt-8 max-w-2xl font-display text-5xl font-semibold leading-[1.05] tracking-tight sm:text-6xl lg:text-7xl">
-        Diagnostics.
+        welcome to.
         <br />
-        <span className="text-primary">Simplified.</span>
+        <span className="text-primary">MEDISYS.</span>
       </h1>
 
       <p className="mt-7 max-w-xl text-lg leading-8 text-muted-foreground">
