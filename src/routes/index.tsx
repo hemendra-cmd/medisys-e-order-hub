@@ -471,8 +471,7 @@ function Landing() {
     </div>
   </div>
 </section>
-      <SiteFooter />
-      <section className="border-y bg-secondary/20 py-24">
+            <section className="border-y bg-secondary/20 py-24">
   <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
     <div className="mx-auto max-w-3xl text-center">
       <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">
@@ -591,6 +590,7 @@ function Landing() {
     </div>
   </div>
 </section>
+      <SiteFooter />
     </div>
   );
 }
