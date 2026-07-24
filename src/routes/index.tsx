@@ -381,6 +381,96 @@ function Landing() {
 
   </div>
 </section>
+      <section className="py-24">
+  <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div className="grid items-center gap-14 lg:grid-cols-2">
+      <div className="relative mx-auto w-full max-w-lg">
+        <div className="absolute -left-6 -top-6 h-32 w-32 rounded-full bg-primary/10 blur-2xl" />
+        <div className="absolute -bottom-8 -right-8 h-40 w-40 rounded-full bg-primary/10 blur-3xl" />
+
+        <div className="relative overflow-hidden rounded-[3rem] border bg-card p-3 shadow-xl">
+          <img
+            src={founderImage}
+            alt="Hemendra Saini, Founder and Managing Director of Medisys"
+            className="aspect-[4/5] w-full rounded-[2.5rem] object-cover"
+          />
+        </div>
+
+        <div className="absolute -bottom-6 left-6 rounded-2xl border bg-background/95 px-6 py-4 shadow-xl backdrop-blur">
+          <p className="text-3xl font-semibold text-primary">17+</p>
+          <p className="text-sm font-medium">Years of leadership</p>
+        </div>
+      </div>
+
+      <div>
+        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">
+          Leadership
+        </p>
+
+        <h2 className="mt-4 font-display text-4xl font-semibold tracking-tight sm:text-5xl">
+          Built on trust, service and long-term relationships.
+        </h2>
+
+        <p className="mt-6 text-lg leading-8 text-muted-foreground">
+          Hemendra Saini founded Medisys in 2009 with a clear goal:
+          make dependable diagnostic products more accessible to laboratories
+          and healthcare professionals.
+        </p>
+
+        <p className="mt-4 leading-7 text-muted-foreground">
+          Under his leadership, Medisys has grown through responsive service,
+          trusted partnerships and a strong commitment to product quality.
+        </p>
+
+        <div className="mt-8 rounded-3xl border bg-secondary/20 p-6">
+          <div className="flex items-start gap-4">
+            <div className="rounded-2xl bg-primary/10 p-3">
+              <GraduationCap className="h-6 w-6 text-primary" />
+            </div>
+
+            <div>
+              <h3 className="text-xl font-semibold">
+                Hemendra Saini
+              </h3>
+
+              <p className="mt-1 font-medium text-primary">
+                Founder & Managing Director
+              </p>
+
+              <div className="mt-4 space-y-2 text-sm leading-6 text-muted-foreground">
+                <p>MBA in Marketing, APS University</p>
+                <p>MSc in Mathematics & Computer Science, SATI</p>
+                <p>BSc in Mathematics, Dr. Hari Singh Gour University</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-8 flex flex-wrap gap-4">
+          <a
+            href="https://www.linkedin.com/in/hemendra-saini-20471533b/"
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 font-semibold text-primary-foreground transition-all hover:-translate-y-1 hover:shadow-lg"
+          >
+            <Linkedin className="h-5 w-5" />
+            View LinkedIn
+          </a>
+
+          <a
+            href="https://g.page/r/CTz0M49OlhLVEBM/review"
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-2 rounded-full border bg-background px-6 py-3 font-semibold transition-all hover:-translate-y-1 hover:shadow-lg"
+          >
+            <Star className="h-5 w-5 text-primary" />
+            Write a Google Review
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
       <SiteFooter />
     </div>
   );
