@@ -23,188 +23,155 @@ export const Route = createFileRoute("/")({
 function Landing() {
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
-          <Logo />
-          <a href="#about" className="text-sm text-muted-foreground hover:text-foreground">About</a>
-        </div>
-      </header>
+      <header className="sticky top-0 z-50 border-b bg-background/90 backdrop-blur-xl">
+  <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+    <Logo />
 
-      <section className="relative overflow-hidden">
-        <div
-          className="pointer-events-none absolute inset-x-0 top-0 h-72"
-          style={{
-            background:
-              "radial-gradient(60% 100% at 50% 0%, color-mix(in oklab, var(--color-primary) 12%, transparent), transparent)",
-          }}
-        />
-        <div className="mx-auto grid max-w-6xl gap-10 px-4 py-14 md:grid-cols-2 md:py-20">
-          <div className="flex flex-col justify-center">
-            <span className="inline-flex w-fit items-center gap-2 rounded-full border bg-accent px-3 py-1 text-xs font-medium text-accent-foreground">
-              <HeartPulse className="h-3.5 w-3.5" /> Celebrating 17 years of trust
-            </span>
-            <h1 className="mt-4 font-display text-4xl font-semibold leading-tight md:text-5xl">
-              Welcome to <span className="text-primary">Medisys</span>
-            </h1>
-            <p className="mt-4 max-w-md text-muted-foreground">
-              Pathological equipment, reagents, rapid tests and lab accessories — ordered in minutes,
-              delivered on time, with credit terms for verified labs.
-            </p>
-            <ul className="mt-6 grid gap-2 text-sm text-muted-foreground">
-              <li className="flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-primary" /> Authentic products from trusted brands</li>
-              <li className="flex items-center gap-2"><Truck className="h-4 w-4 text-primary" /> Same-day dispatch on orders before 4 PM</li>
-              <li className="flex items-center gap-2"><BadgeCheck className="h-4 w-4 text-primary" /> Pay on QR or credit terms</li>
-            </ul>
-          </div>
+    <nav className="flex items-center gap-5">
+      <a
+        href="#about"
+        className="hidden text-sm font-medium text-muted-foreground transition-colors hover:text-foreground sm:block"
+      >
+        About
+      </a>
 
-          <div className="mx-auto w-full max-w-md">
-            <AuthCard />
-          </div>
-        </div>
-      </section>
+      <a
+        href="#why-medisys"
+        className="hidden text-sm font-medium text-muted-foreground transition-colors hover:text-foreground md:block"
+      >
+        Why Medisys
+      </a>
 
-      <section aria-label="Medisys banner" className="border-y">
-        <img
-          src={bannerImage}
-          alt="Medisys — Celebrating 17 years of trust"
-          className="w-full h-auto rounded-xl object-cover"
-        />
-      </section>
+      <a
+        href="#login"
+        className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-all hover:-translate-y-0.5 hover:bg-primary-hover hover:shadow-lg"
+      >
+        Login
+      </a>
+    </nav>
+  </div>
+</header>
 
-      <section id="about" className="bg-muted/40">
-        <div className="mx-auto max-w-6xl px-4 py-14">
-          <h2 className="font-display text-2xl font-semibold md:text-3xl">About Medisys</h2>
-          <p className="mt-3 max-w-3xl text-muted-foreground">
-            Medisys is a leading distributor of diagnostic products across India. We supply pathological
-            equipment, reagents, rapid test kits, biochemistry consumables, and lab instruments to
-            clinics, hospitals, and independent labs. Our portal is built for procurement teams — fast
-            reordering, transparent pricing, and flexible credit for verified businesses.
-          </p>
-          <div className="mt-8 grid gap-4 md:grid-cols-3">
-            {[
-              { t: "500+", s: "labs served" },
-              { t: "2,500+", s: "products" },
-              { t: "same day delivery", s: "\n" },
-            ].map((x) => (
-              <div key={x.t} className="rounded-lg border bg-card p-5 shadow-card">
-                <div className="font-display text-3xl font-semibold text-primary whitespace-pre-line">{x.t}</div>
-                <div className="mt-1 text-sm text-muted-foreground whitespace-pre-line">{x.s}</div>
-              </div>
-            ))}
-          </div>
-                    <div className="mt-12 border-t pt-10">
-            <div className="grid gap-8 md:grid-cols-[220px_1fr] md:items-start">
-              <div className="mx-auto w-full max-w-[220px]">
-                <img
-                  src={founderImage}
-                  alt="Hemendra Saini, Founder and Managing Director of Medisys"
-                  className="aspect-[4/5] w-full rounded-xl border object-cover shadow-card"
-                />
+<section className="relative overflow-hidden">
+  <div
+    className="pointer-events-none absolute inset-0"
+    style={{
+      background:
+        "radial-gradient(circle at 20% 20%, color-mix(in oklab, var(--color-primary) 12%, transparent), transparent 38%), radial-gradient(circle at 85% 75%, color-mix(in oklab, var(--color-primary) 8%, transparent), transparent 35%)",
+    }}
+  />
 
-                <div className="mt-4 text-center">
-                  <h3 className="font-display text-xl font-semibold">
-                    Hemendra Saini
-                  </h3>
+  <div className="relative mx-auto grid min-h-[760px] max-w-7xl items-center gap-14 px-4 py-16 sm:px-6 md:grid-cols-2 md:py-24 lg:px-8">
+    <div className="flex flex-col justify-center">
+      <div className="inline-flex w-fit items-center gap-2 rounded-full border bg-background/80 px-4 py-2 shadow-sm backdrop-blur">
+        <HeartPulse className="h-4 w-4 text-primary" />
+        <span className="text-sm font-medium">
+          Trusted for 17+ years
+        </span>
+      </div>
 
-                  <p className="mt-1 text-sm font-medium text-primary">
-                    Founder & Managing Director
-                  </p>
+      <h1 className="mt-8 max-w-2xl font-display text-5xl font-semibold leading-[1.05] tracking-tight sm:text-6xl lg:text-7xl">
+        Diagnostics.
+        <br />
+        <span className="text-primary">Simplified.</span>
+      </h1>
 
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    Founded Medisys in 2009
-                  </p>
-                </div>
-              </div>
+      <p className="mt-7 max-w-xl text-lg leading-8 text-muted-foreground">
+        Premium diagnostic products, laboratory equipment, rapid test kits
+        and consumables supplied with speed, reliability and complete
+        transparency.
+      </p>
 
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-widest text-primary">
-                  Our Leadership
-                </p>
+      <div className="mt-10 grid gap-4 sm:grid-cols-2">
+        <div className="group rounded-2xl border bg-background/80 p-5 shadow-sm backdrop-blur transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+          <div className="flex items-start gap-3">
+            <div className="rounded-xl bg-primary/10 p-2.5">
+              <ShieldCheck className="h-5 w-5 text-primary" />
+            </div>
 
-                <h3 className="mt-2 font-display text-2xl font-semibold">
-                  About the Founder
-                </h3>
-
-                <p className="mt-4 max-w-3xl leading-7 text-muted-foreground">
-                  Hemendra Saini founded Medisys in 2009 with a vision to provide
-                  reliable diagnostic products and laboratory solutions. With
-                  extensive experience in the field, he has built Medisys on the
-                  principles of quality, trust, customer satisfaction, and
-                  long-term partnerships, making it a trusted name in the
-                  diagnostics industry.
-                </p>
-
-                <div className="mt-6 rounded-xl border bg-card p-5 shadow-card">
-                  <h4 className="flex items-center gap-2 font-display text-lg font-semibold">
-                    <GraduationCap className="h-5 w-5 text-primary" />
-                    Education
-                  </h4>
-
-                  <div className="mt-4 space-y-4">
-                    <div>
-                      <p className="font-medium">
-                        Master of Business Administration, Marketing
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        Awadhesh Pratap Singh University, Rewa
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        1997 – 1999
-                      </p>
-                    </div>
-
-                    <div>
-                      <p className="font-medium">
-                        Master of Science, Mathematics and Computer Science
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        Samrat Ashok Technological Institute
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        1995 – 1997
-                      </p>
-                    </div>
-
-                    <div>
-                      <p className="font-medium">
-                        Bachelor of Science, Mathematics
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        Dr. Hari Singh Gour University, Sagar
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        1992 – 1995
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-6 flex flex-wrap gap-3">
-                  <a
-                    href="https://www.linkedin.com/in/hemendra-saini-20471533b/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary-hover"
-                  >
-                    <Linkedin className="h-4 w-4" />
-                    Contact on LinkedIn
-                  </a>
-
-                  <a
-                    href="https://g.page/r/CTz0M49OlhLVEBM/review"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 rounded-md border bg-background px-4 py-2.5 text-sm font-semibold hover:bg-secondary"
-                  >
-                    <Star className="h-4 w-4 text-primary" />
-                    Rate Medisys on Google
-                  </a>
-                </div>
-              </div>
+            <div>
+              <h3 className="font-semibold">Genuine Products</h3>
+              <p className="mt-1 text-sm leading-6 text-muted-foreground">
+                Authentic diagnostic products from trusted manufacturers.
+              </p>
             </div>
           </div>
         </div>
-      </section>
+
+        <div className="group rounded-2xl border bg-background/80 p-5 shadow-sm backdrop-blur transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+          <div className="flex items-start gap-3">
+            <div className="rounded-xl bg-primary/10 p-2.5">
+              <Truck className="h-5 w-5 text-primary" />
+            </div>
+
+            <div>
+              <h3 className="font-semibold">Fast Delivery</h3>
+              <p className="mt-1 text-sm leading-6 text-muted-foreground">
+                Prompt processing and same-day dispatch where available.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="group rounded-2xl border bg-background/80 p-5 shadow-sm backdrop-blur transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+          <div className="flex items-start gap-3">
+            <div className="rounded-xl bg-primary/10 p-2.5">
+              <BadgeCheck className="h-5 w-5 text-primary" />
+            </div>
+
+            <div>
+              <h3 className="font-semibold">Flexible Credit</h3>
+              <p className="mt-1 text-sm leading-6 text-muted-foreground">
+                Convenient payment options for verified laboratories.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="group rounded-2xl border bg-background/80 p-5 shadow-sm backdrop-blur transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+          <div className="flex items-start gap-3">
+            <div className="rounded-xl bg-primary/10 p-2.5">
+              <HeartPulse className="h-5 w-5 text-primary" />
+            </div>
+
+            <div>
+              <h3 className="font-semibold">Expert Support</h3>
+              <p className="mt-1 text-sm leading-6 text-muted-foreground">
+                Dedicated assistance for products and laboratory requirements.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="login"
+      className="mx-auto w-full max-w-md scroll-mt-28"
+    >
+      <div className="mb-5 text-center md:text-left">
+        <p className="text-sm font-semibold text-primary">
+          Medisys Online Ordering
+        </p>
+
+        <h2 className="mt-2 font-display text-2xl font-semibold">
+          Access your account
+        </h2>
+
+        <p className="mt-2 text-sm text-muted-foreground">
+          Log in or create an account to browse products and place orders.
+        </p>
+      </div>
+
+      <AuthCard />
+
+      <div className="mt-5 flex items-center justify-center gap-2 text-xs text-muted-foreground">
+        <ShieldCheck className="h-4 w-4 text-primary" />
+        Secure access powered by Supabase
+      </div>
+    </div>
+  </div>
+</section>
 
       <SiteFooter />
     </div>
