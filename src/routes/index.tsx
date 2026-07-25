@@ -75,7 +75,7 @@ function Landing() {
         <br />
         <span className="text-primary">Quality.</span>
       </h1>
-      <h1 className="mt-4 max-w-2xl font-display text-5xl font-Canela leading-[1.05] tracking-tight sm:text-6xl lg:text-7xl">
+      <h1 className="mt-0 max-w-2xl font-display text-5xl font-Canela leading-[1.05] tracking-tight sm:text-6xl lg:text-7xl">
         Building
         <br />
         <span className="text-primary">Relationships.</span>
