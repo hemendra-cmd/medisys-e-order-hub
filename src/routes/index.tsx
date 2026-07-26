@@ -209,7 +209,7 @@ function Landing() {
         src={bannerImage}
         alt="Medisys — Celebrating 17 years of trust"
         className="
-          h-[210px] w-full object-cover object-center
+          h-[210px] w-[780px] object-cover object-center
           sm:h-[300px]
           md:h-[380px]
           lg:h-[500px]
