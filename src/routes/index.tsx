@@ -205,17 +205,15 @@ function Landing() {
      <section className="bg-background py-10 sm:py-14 md:py-20">
   <div className="w-full">
     <div className="relative overflow-hidden border-y bg-card shadow-sm animate-fade-up-delay-2">
-     <img
+   <img
   src={bannerImage}
   alt="Medisys — Celebrating 17 years of trust"
   className="
-    w-full h-auto 
-    object-cover object-center
-    sm:h-[300px]
-    md:h-[380px]
-    lg:h-[500px]
+    w-full
+    h-auto
+    object-contain
   "
-/>   
+/>
     </div>
   </div>
 </section>
