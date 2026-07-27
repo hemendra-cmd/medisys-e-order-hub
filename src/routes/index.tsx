@@ -807,7 +807,30 @@ function AuthCard() {
               },
             },
           });
+if (!signupData.user) {
+  setError("Account creation failed. User information was not returned.");
+  return;
+}
 
+const { error: profileError } = await supabase
+  .from("customers")
+  .upsert(
+    {
+      user_id: signupData.user.id,
+      email,
+      organisation_name: organisation,
+      whatsapp: phone,
+    },
+    {
+      onConflict: "user_id",
+    }
+  );
+
+if (profileError) {
+  console.error("Customer profile error:", profileError);
+  setError(profileError.message);
+  return;
+}
         if (signupError) {
           setError(signupError.message);
           return;
