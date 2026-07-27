@@ -624,11 +624,12 @@ function AuthCard() {
   const navigate = useNavigate();
   const [mode, setMode] = useState<Mode>("login");
   const [form, setForm] = useState({
-    email: "",
-    organisation: "",
-    password: "",
-    confirmPassword: "",
-    otp: "",
+  email: "",
+  organisation: "",
+  whatsapp: "",
+  password: "",
+  confirmPassword: "",
+  otp: "",
 });
   const [otpSent, setOtpSent] = useState(false);
 const [loading, setLoading] = useState(false);
@@ -970,40 +971,48 @@ if (mode === "forgot") {
     />
   </>
 )}
-        {mode === "signup" && (
-          <>
-            <Field
-              label="Organisation Name"
-              value={form.organisation}
-              onChange={upd("organisation")}
-              placeholder="City Diagnostics"
-            />
+       {mode === "signup" && (
+  <>
+    <Field
+      label="Organisation Name"
+      value={form.organisation}
+      onChange={upd("organisation")}
+      placeholder="City Diagnostics"
+    />
 
-            <Field
-              label="Email Address"
-              type="email"
-              value={form.email}
-              onChange={upd("email")}
-              placeholder="you@lab.com"
-            />
+    <Field
+      label="Email Address"
+      type="email"
+      value={form.email}
+      onChange={upd("email")}
+      placeholder="you@lab.com"
+    />
 
-            <Field
-              label="Password"
-              type="password"
-              value={form.password}
-              onChange={upd("password")}
-              placeholder="Create password"
-            />
+    <Field
+      label="Mobile Number"
+      type="tel"
+      value={form.whatsapp}
+      onChange={upd("whatsapp")}
+      placeholder="9425405655"
+    />
 
-            <Field
-             label="Confirm Password"
-             type="password"
-             value={form.confirmPassword}
-             onChange={upd("confirmPassword")}
-             placeholder="Confirm password"
-            />
-          </>
-       )}
+    <Field
+      label="Password"
+      type="password"
+      value={form.password}
+      onChange={upd("password")}
+      placeholder="Create password"
+    />
+
+    <Field
+      label="Confirm Password"
+      type="password"
+      value={form.confirmPassword}
+      onChange={upd("confirmPassword")}
+      placeholder="Confirm password"
+    />
+  </>
+)}
         {mode === "forgot" && !otpSent && (
           <Field
             label="Email Address"
