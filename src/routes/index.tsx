@@ -719,16 +719,20 @@ function AuthCard() {
           return;
         }
 
-       const { data: signupData, error: signupError } =
-  await supabase.auth.signUp({
-    email,
-    password: form.password,
-    options: {
-      data: {
-        organisation_name: organisation,
-      },
+     const signupResponse = await supabase.auth.signUp({
+  email,
+  password: form.password,
+  options: {
+    data: {
+      organisation_name: organisation,
     },
-  });
+  },
+});
+
+console.log("SIGNUP RESPONSE", signupResponse);
+
+const signupData = signupResponse.data;
+const signupError = signupResponse.error;
 
 if (signupError) {
   setError(`SIGNUP ERROR: ${signupError.message}`);
