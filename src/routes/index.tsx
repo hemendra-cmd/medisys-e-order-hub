@@ -662,25 +662,30 @@ const submit = async (e: React.FormEvent) => {
 
   if (mode === "signup") {
     if (
-      !form.organisation ||
-      !form.email ||
-      !form.password ||
-      !form.confirmPassword
-    ) {
+  !form.organisation ||
+  !form.email ||
+  !form.whatsapp ||
+  !form.password ||
+  !form.confirmPassword
+) {
       setError("Please fill all the fields.");
       return;
     }
 
-    if (form.password !== form.confirmPassword) {
-      setError("Passwords do not match.");
-      return;
-    }
-const { error } = await supabase.auth.signUp({
-  email: form.email.trim(),
+  const phone = formatPhoneNumber(form.whatsapp);
+
+if (!/^\+91[6-9]\d{9}$/.test(phone)) {
+  setError("Please enter a valid 10-digit Indian mobile number.");
+  return;
+}
+const { data, error } = await supabase.auth.signUp({
+  email: form.email.trim().toLowerCase(),
   password: form.password,
   options: {
     data: {
       organisation_name: form.organisation.trim(),
+      whatsapp: phone,
+      phone: phone,
     },
   },
 });
@@ -694,10 +699,33 @@ alert(
   "Account created successfully. Please verify your email if required."
 );
 
+if (data.user) {
+  const { error: customerError } = await supabase
+    .from("customers")
+    .upsert(
+      {
+        user_id: data.user.id,
+        email: form.email.trim().toLowerCase(),
+        organisation_name: form.organisation.trim(),
+        whatsapp: phone,
+      },
+      {
+        onConflict: "user_id",
+      }
+    );
+
+  if (customerError) {
+    console.error(
+      "Failed to save customer profile:",
+      customerError
+    );
+  }
+}
+    
 actions.signup({
   email: form.email.trim().toLowerCase(),
   organisation: form.organisation.trim(),
-  whatsapp: "",
+  whatsapp: phone,
 });
 
 navigate({ to: "/dashboard" });
