@@ -16,7 +16,7 @@ import bannerImage from "../assets/MEDISYS BANNER.jpeg";
 import founderImage from "../assets/founder.jpeg";
 import agappeLogo from "../assets/agappe.jpeg";
 import boditechLogo from "../assets/boditech.jpeg";
-import matrixLabsLogo from "../assets/matrix-labs.jpeg";
+import matrixLabsLogo from "../assets/matrix labs.jpeg";
 import nasmedLogo from "../assets/nasmed.jpeg";
 import peerlessLogo from "../assets/peerless.jpeg";
 import reckonLogo from "../assets/reckon.jpeg";
