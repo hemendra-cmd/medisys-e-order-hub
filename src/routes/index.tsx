@@ -620,431 +620,407 @@ function Landing() {
 
 type Mode = "login" | "signup" | "forgot";
 
+const ADMIN_EMAILS = [
+  "aryanshsaini11@gmail.com",
+  "medisysbpl@rediffmail.com",
+  "medisysbpl@gmail.com",
+];
+
 function AuthCard() {
   const navigate = useNavigate();
+
   const [mode, setMode] = useState<Mode>("login");
- const [form, setForm] = useState({
-  email: "",
-  organisation: "",
-  whatsapp: "",
-  password: "",
-  confirmPassword: "",
-  otp: "",
-  signupOtp: "",
-});
+  const [form, setForm] = useState({
+    email: "",
+    organisation: "",
+    whatsapp: "",
+    password: "",
+    confirmPassword: "",
+    otp: "",
+    signupOtp: "",
+  });
+
   const [otpSent, setOtpSent] = useState(false);
   const [signupOtpSent, setSignupOtpSent] = useState(false);
-const [loading, setLoading] = useState(false);
-const [error, setError] = useState("");
-  
-  const upd = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
-    setForm({ ...form, [k]: e.target.value });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const upd =
+    (key: keyof typeof form) =>
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setForm((current) => ({
+        ...current,
+        [key]: event.target.value,
+      }));
+    };
 
   const formatPhoneNumber = (value: string) => {
-  const digits = value.replace(/\D/g, "");
+    const digits = value.replace(/\D/g, "");
 
-  if (digits.length === 10) {
-    return `+91${digits}`;
-  }
-
-  if (digits.length === 12 && digits.startsWith("91")) {
-    return `+${digits}`;
-  }
-
-  if (value.startsWith("+")) {
-    return value;
-  }
-
-  return `+${digits}`;
-};
-
-const submit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setError("");
-
-  if (mode === "signup") {
-    if (signupOtpSent) {
-  const phone = formatPhoneNumber(form.whatsapp);
-  const otp = form.signupOtp.trim();
-
-  if (!otp) {
-    setError("Please enter the OTP.");
-    return;
-  }
-
-  const { data: verifyData, error: verifyError } =
-    await supabase.auth.verifyOtp({
-      phone,
-      token: otp,
-      type: "phone_change",
-    });
-
-  if (verifyError) {
-    console.error("Phone verification error:", verifyError);
-    setError(verifyError.message);
-    return;
-  }
-
-  const verifiedUser = verifyData.user;
-
-  if (!verifiedUser) {
-    setError("Phone verification failed.");
-    return;
-  }
-
-  const { error: customerError } = await supabase
-    .from("customers")
-    .upsert(
-      {
-        user_id: verifiedUser.id,
-        email: form.email.trim().toLowerCase(),
-        organisation_name: form.organisation.trim(),
-        whatsapp: phone,
-      },
-      {
-        onConflict: "user_id",
-      }
-    );
-
-  if (customerError) {
-    console.error("Customer profile error:", customerError);
-    setError(customerError.message);
-    return;
-  }
-
-  actions.signup({
-    email: form.email.trim().toLowerCase(),
-    organisation: form.organisation.trim(),
-    whatsapp: phone,
-  });
-
-  navigate({
-    to: "/dashboard",
-  });
-
-  return;
-}
-    if (signupOtpSent) {
-  if (!form.signupOtp.trim()) {
-    setError("Please enter the OTP.");
-    return;
-  }
-
-  const { error } = await supabase.auth.verifyOtp({
-    phone: formatPhoneNumber(form.whatsapp),
-    token: form.signupOtp.trim(),
-    type: "phone_change",
-  });
-
-  if (error) {
-    setError(error.message);
-    return;
-  }
-
-  actions.signup({
-    email: form.email.trim().toLowerCase(),
-    organisation: form.organisation.trim(),
-    whatsapp: formatPhoneNumber(form.whatsapp),
-  });
-
-  navigate({
-    to: "/dashboard",
-  });
-
-  return;
-}
-    if (
-  !form.organisation ||
-  !form.email ||
-  !form.whatsapp ||
-  !form.password ||
-  !form.confirmPassword
-) {
-      setError("Please fill all the fields.");
-      return;
+    if (digits.length === 10) {
+      return `+91${digits}`;
     }
 
-  const phone = formatPhoneNumber(form.whatsapp);
+    if (digits.length === 12 && digits.startsWith("91")) {
+      return `+${digits}`;
+    }
 
-if (!/^\+91[6-9]\d{9}$/.test(phone)) {
-  setError("Please enter a valid 10-digit Indian mobile number.");
-  return;
-}
-const { data, error } = await supabase.auth.signUp({
-  email: form.email.trim().toLowerCase(),
-  password: form.password,
-  options: {
-    data: {
-      organisation_name: form.organisation.trim(),
-      whatsapp: phone,
-      phone: phone,
-    },
-  },
-});
+    if (value.startsWith("+")) {
+      return value;
+    }
 
-if (error) {
-  setError(error.message);
-  return;
-}
+    return `+${digits}`;
+  };
 
-alert(
-  "Account created successfully. Please verify your email if required."
-);
+  const loadCustomerAndContinue = async (
+    userId: string,
+    email: string,
+    fallbackOrganisation = "",
+    fallbackWhatsapp = ""
+  ) => {
+    const { data: customer, error: customerError } = await supabase
+      .from("customers")
+      .select("organisation_name, whatsapp")
+      .eq("user_id", userId)
+      .maybeSingle();
 
-if (data.user) {
-  const { error: customerError } = await supabase
-    .from("customers")
-    .upsert(
-      {
-        user_id: data.user.id,
-        email: form.email.trim().toLowerCase(),
-        organisation_name: form.organisation.trim(),
-        whatsapp: phone,
-      },
-      {
-        onConflict: "user_id",
-      }
-    );
+    if (customerError) {
+      console.error("Failed to load customer profile:", customerError);
+    }
 
-  if (customerError) {
-    console.error(
-      "Failed to save customer profile:",
-      customerError
-    );
-  }
-}
-    
-const { error: phoneOtpError } =
-  await supabase.auth.signInWithOtp({
-    phone,
-    options: {
-      shouldCreateUser: false,
-    },
-  });
+    const organisation =
+      customer?.organisation_name?.trim() || fallbackOrganisation.trim();
 
-if (phoneOtpError) {
-  setError(phoneOtpError.message);
-  return;
-}
+    const whatsapp = customer?.whatsapp?.trim() || fallbackWhatsapp.trim();
 
-setSignupOtpSent(true);
+    if (!organisation) {
+      setError("Your organisation information could not be found.");
+      return false;
+    }
 
-alert("Account created successfully. Please verify your mobile number.");
+    actions.login(email, organisation, whatsapp);
+    return true;
+  };
 
-return;
-if (mode === "login") {
-  const identifier = form.email.trim();
-  const isEmail = identifier.includes("@");
+  const submit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setError("");
+    setLoading(true);
 
-  if (!identifier) {
-    setError("Please enter your email or mobile number.");
-    return;
-  }
+    try {
+      if (mode === "signup") {
+        const email = form.email.trim().toLowerCase();
+        const organisation = form.organisation.trim();
+        const phone = formatPhoneNumber(form.whatsapp);
 
-  setLoading(true);
+        if (signupOtpSent) {
+          const token = form.signupOtp.trim();
 
-  try {
-    // EMAIL + PASSWORD LOGIN
-    if (isEmail) {
-      if (!form.password) {
-        setError("Please enter your password.");
-        return;
-      }
+          if (!token) {
+            setError("Please enter the OTP.");
+            return;
+          }
 
-      const { data, error } =
-        await supabase.auth.signInWithPassword({
-          email: identifier.toLowerCase(),
-          password: form.password,
-        });
+          const { data: verifyData, error: verifyError } =
+            await supabase.auth.verifyOtp({
+              phone,
+              token,
+              type: "phone_change",
+            });
 
-      if (error) {
-        setError(error.message);
-        return;
-      }
+          if (verifyError) {
+            console.error("Phone verification error:", verifyError);
+            setError(verifyError.message);
+            return;
+          }
 
-      const user = data.user;
+          if (!verifyData.user) {
+            setError("Phone verification failed.");
+            return;
+          }
 
-      if (!user) {
-        setError(
-          "Login succeeded, but user information was not found."
-        );
-        return;
-      }
-
-      const email = user.email?.toLowerCase() ?? "";
-
-      const adminEmails = [
-        "aryanshsaini11@gmail.com",
-        "medisysbpl@rediffmail.com",
-        "medisysbpl@gmail.com",
-      ];
-
-      if (!adminEmails.includes(email)) {
-        const { data: customer, error: customerError } =
-          await supabase
+          const { error: customerError } = await supabase
             .from("customers")
-            .select("organisation_name, whatsapp")
-            .eq("user_id", user.id)
-            .maybeSingle();
+            .upsert(
+              {
+                user_id: verifyData.user.id,
+                email,
+                organisation_name: organisation,
+                whatsapp: phone,
+              },
+              {
+                onConflict: "user_id",
+              }
+            );
 
-        if (customerError) {
-          console.error(
-            "Failed to load customer profile:",
-            customerError
-          );
+          if (customerError) {
+            console.error("Failed to save customer profile:", customerError);
+            setError(customerError.message);
+            return;
+          }
+
+          actions.signup({
+            email,
+            organisation,
+            whatsapp: phone,
+          });
+
+          navigate({ to: "/dashboard" });
+          return;
         }
 
-        const organisation =
-          customer?.organisation_name?.trim() ||
-          String(
-            user.user_metadata?.organisation_name ?? ""
-          ).trim();
+        if (
+          !organisation ||
+          !email ||
+          !form.whatsapp.trim() ||
+          !form.password ||
+          !form.confirmPassword
+        ) {
+          setError("Please fill all the fields.");
+          return;
+        }
 
-        if (!organisation) {
+        if (form.password !== form.confirmPassword) {
+          setError("Passwords do not match.");
+          return;
+        }
+
+        if (form.password.length < 6) {
+          setError("Password must contain at least 6 characters.");
+          return;
+        }
+
+        if (!/^\+91[6-9]\d{9}$/.test(phone)) {
+          setError("Please enter a valid 10-digit Indian mobile number.");
+          return;
+        }
+
+        const { data: signupData, error: signupError } =
+          await supabase.auth.signUp({
+            email,
+            password: form.password,
+            options: {
+              data: {
+                organisation_name: organisation,
+                whatsapp: phone,
+              },
+            },
+          });
+
+        if (signupError) {
+          setError(signupError.message);
+          return;
+        }
+
+        if (!signupData.session || !signupData.user) {
           setError(
-            "Your organisation information could not be found."
+            "Your account was created, but a session was not started. In Supabase, disable Confirm email for this signup flow, or verify the email and log in first."
           );
           return;
         }
 
-        actions.login(
-          email,
-          organisation,
-          customer?.whatsapp ?? ""
+        const { error: phoneUpdateError } = await supabase.auth.updateUser({
+          phone,
+        });
+
+        if (phoneUpdateError) {
+          setError(phoneUpdateError.message);
+          return;
+        }
+
+        setSignupOtpSent(true);
+        setForm((current) => ({
+          ...current,
+          signupOtp: "",
+        }));
+
+        alert("An OTP has been sent to your mobile number.");
+        return;
+      }
+
+      if (mode === "login") {
+        const identifier = form.email.trim();
+        const isEmail = identifier.includes("@");
+
+        if (!identifier) {
+          setError("Please enter your email or mobile number.");
+          return;
+        }
+
+        if (isEmail) {
+          if (!form.password) {
+            setError("Please enter your password.");
+            return;
+          }
+
+          const { data: loginData, error: loginError } =
+            await supabase.auth.signInWithPassword({
+              email: identifier.toLowerCase(),
+              password: form.password,
+            });
+
+          if (loginError) {
+            setError(loginError.message);
+            return;
+          }
+
+          const user = loginData.user;
+
+          if (!user) {
+            setError("Login succeeded, but user information was not found.");
+            return;
+          }
+
+          const email = user.email?.toLowerCase() ?? "";
+          const isAdmin = ADMIN_EMAILS.includes(email);
+
+          if (!isAdmin) {
+            const continued = await loadCustomerAndContinue(
+              user.id,
+              email,
+              String(user.user_metadata?.organisation_name ?? ""),
+              String(user.user_metadata?.whatsapp ?? "")
+            );
+
+            if (!continued) {
+              return;
+            }
+          }
+
+          navigate({
+            to: isAdmin ? "/orders" : "/dashboard",
+          });
+
+          return;
+        }
+
+        const phone = formatPhoneNumber(identifier);
+
+        if (!/^\+91[6-9]\d{9}$/.test(phone)) {
+          setError("Please enter a valid 10-digit Indian mobile number.");
+          return;
+        }
+
+        if (!otpSent) {
+          const { error: otpError } = await supabase.auth.signInWithOtp({
+            phone,
+            options: {
+              shouldCreateUser: false,
+            },
+          });
+
+          if (otpError) {
+            setError(otpError.message);
+            return;
+          }
+
+          setOtpSent(true);
+          setForm((current) => ({
+            ...current,
+            password: "",
+          }));
+
+          alert("We've sent an OTP to your mobile number.");
+          return;
+        }
+
+        const token = form.password.trim();
+
+        if (!token) {
+          setError("Please enter the OTP.");
+          return;
+        }
+
+        const { data: verifyData, error: verifyError } =
+          await supabase.auth.verifyOtp({
+            phone,
+            token,
+            type: "sms",
+          });
+
+        if (verifyError) {
+          setError(verifyError.message);
+          return;
+        }
+
+        const user = verifyData.user;
+
+        if (!user) {
+          setError("OTP verification failed.");
+          return;
+        }
+
+        const continued = await loadCustomerAndContinue(
+          user.id,
+          user.email?.toLowerCase() ?? "",
+          String(user.user_metadata?.organisation_name ?? ""),
+          phone
         );
+
+        if (!continued) {
+          return;
+        }
+
+        navigate({ to: "/dashboard" });
+        return;
       }
 
-      navigate({
-        to: adminEmails.includes(email)
-          ? "/orders"
-          : "/dashboard",
-      });
+      if (mode === "forgot") {
+        const email = form.email.trim().toLowerCase();
 
-      return;
+        if (!email) {
+          setError("Please enter your email address.");
+          return;
+        }
+
+        const { error: resetError } =
+          await supabase.auth.resetPasswordForEmail(email, {
+            redirectTo: "https://www.medisysonline.in/reset-password",
+          });
+
+        if (resetError) {
+          setError(resetError.message);
+          return;
+        }
+
+        alert("Password reset link sent. Please check your email.");
+        setMode("login");
+      }
+    } finally {
+      setLoading(false);
     }
+  };
 
+  const changeMode = (nextMode: Mode) => {
+    setMode(nextMode);
+    setError("");
+    setOtpSent(false);
+    setSignupOtpSent(false);
 
-   // PHONE OTP — SEND OTP
-const phone = formatPhoneNumber(identifier);
+    setForm((current) => ({
+      ...current,
+      password: "",
+      confirmPassword: "",
+      otp: "",
+      signupOtp: "",
+    }));
+  };
 
-if (!/^\+91[6-9]\d{9}$/.test(phone)) {
-  setError("Please enter a valid 10-digit Indian mobile number.");
-  return;
-}
-
-if (!otpSent) {
-  if (!data.session) {
-  setError(
-    "Please verify your email first, then log in and add your mobile number."
-  );
-  return;
-}
-
-const { error: phoneOtpError } =
-  await supabase.auth.updateUser({
-    phone,
-  });
-
-if (phoneOtpError) {
-  setError(phoneOtpError.message);
-  return;
-}
-
-setSignupOtpSent(true);
-
-alert("An OTP has been sent to your mobile number.");
-
-return;
-}
-if (!data.user) {
-  setError("OTP verification failed.");
-  return;
-}
-
-const user = data.user;
-
-const { data: customer, error: customerError } =
-  await supabase
-    .from("customers")
-    .select("organisation_name, whatsapp")
-    .eq("user_id", user.id)
-    .maybeSingle();
-
-if (customerError) {
-  console.error(
-    "Failed to load customer profile:",
-    customerError
-  );
-}
-
-const organisation =
-  customer?.organisation_name?.trim() ||
-  String(user.user_metadata?.organisation_name ?? "").trim();
-
-if (!organisation) {
-  setError("Your organisation information could not be found.");
-  return;
-}
-
-actions.login(
-  user.email ?? "",
-  organisation,
-  customer?.whatsapp ?? ""
-);
-
-navigate({
-  to: "/dashboard",
-});
-    navigate({
-      to: "/dashboard",
-    });
-  } finally {
-    setLoading(false);
-  }
-
-  return;
-}
-
-if (mode === "forgot") {
-  if (!form.email) {
-    setError("Please enter your email address.");
-    return;
-  }
-
-  const { error } =
-    await supabase.auth.resetPasswordForEmail(
-      form.email.trim(),
-      {
-        redirectTo:
-          "https://www.medisysonline.in/reset-password",
-      }
-    );
-
-  if (error) {
-    setError(error.message);
-    return;
-  }
-
-  alert(
-    "Password reset link sent. Please check your email."
-  );
-
-  setMode("login");
-  return;
-}
-};
   return (
     <div className="rounded-2xl border bg-card p-6 shadow-elevated">
       <div className="mb-5 flex items-center gap-1 rounded-full bg-secondary p-1 text-sm">
-        {(["login", "signup"] as Mode[]).map((m) => (
+        {(["login", "signup"] as Mode[]).map((item) => (
           <button
-            key={m}
-            onClick={() => { setMode(m); setError(""); }}
+            key={item}
+            type="button"
+            onClick={() => changeMode(item)}
             className={`flex-1 rounded-full py-2 font-medium transition-colors ${
-              mode === m ? "bg-background text-foreground shadow-card" : "text-muted-foreground"
+              mode === item
+                ? "bg-background text-foreground shadow-card"
+                : "text-muted-foreground"
             }`}
           >
-            {m === "login" ? "Login" : "Sign up"}
+            {item === "login" ? "Login" : "Sign up"}
           </button>
         ))}
       </div>
@@ -1052,172 +1028,165 @@ if (mode === "forgot") {
       {mode === "forgot" && (
         <div className="mb-4 text-center">
           <h3 className="font-display text-lg font-semibold">Reset password</h3>
-          <p className="mt-1 text-xs text-muted-foreground">We'll send a password reset link to your email address.</p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            We'll send a password reset link to your email address.
+          </p>
         </div>
       )}
 
       <form onSubmit={submit} className="space-y-3">
-       {mode === "login" && (
-  <>
-    <Field
-      label="Email ID or Mobile Number"
-      type="text"
-      value={form.email}
-      onChange={(e) => {
-        setForm({
-          ...form,
-          email: e.target.value,
-          password: "",
-        });
+        {mode === "login" && (
+          <>
+            <Field
+              label="Email ID or Mobile Number"
+              type="text"
+              value={form.email}
+              onChange={(event) => {
+                setForm((current) => ({
+                  ...current,
+                  email: event.target.value,
+                  password: "",
+                }));
+                setOtpSent(false);
+                setError("");
+              }}
+              placeholder="Email or 10-digit mobile number"
+            />
 
-        setOtpSent(false);
-        setError("");
-      }}
-      placeholder="Email or 10-digit mobile number"
-    />
+            <Field
+              label={
+                form.email.trim() && !form.email.includes("@") && otpSent
+                  ? "Enter OTP"
+                  : "Password"
+              }
+              type={
+                form.email.trim() && !form.email.includes("@") && otpSent
+                  ? "text"
+                  : "password"
+              }
+              value={form.password}
+              onChange={upd("password")}
+              placeholder={
+                form.email.trim() && !form.email.includes("@")
+                  ? otpSent
+                    ? "Enter 6-digit OTP"
+                    : "OTP will be sent to this number"
+                  : "••••••••"
+              }
+              disabled={
+                Boolean(form.email.trim()) &&
+                !form.email.includes("@") &&
+                !otpSent
+              }
+              inputMode={
+                form.email.trim() && !form.email.includes("@") && otpSent
+                  ? "numeric"
+                  : undefined
+              }
+              maxLength={
+                form.email.trim() && !form.email.includes("@") && otpSent
+                  ? 6
+                  : undefined
+              }
+            />
+          </>
+        )}
 
-    <Field
-      label={
-        form.email.trim() &&
-        !form.email.includes("@") &&
-        otpSent
-          ? "Enter OTP"
-          : "Password"
-      }
-      type={
-        form.email.trim() &&
-        !form.email.includes("@") &&
-        otpSent
-          ? "text"
-          : "password"
-      }
-      value={form.password}
-      onChange={upd("password")}
-      placeholder={
-        form.email.trim() &&
-        !form.email.includes("@")
-          ? otpSent
-            ? "Enter 6-digit OTP"
-            : "OTP will be sent to this number"
-          : "••••••••"
-      }
-      disabled={
-        !!form.email.trim() &&
-        !form.email.includes("@") &&
-        !otpSent
-      }
-      inputMode={
-        form.email.trim() &&
-        !form.email.includes("@") &&
-        otpSent
-          ? "numeric"
-          : undefined
-      }
-      maxLength={
-        form.email.trim() &&
-        !form.email.includes("@") &&
-        otpSent
-          ? 6
-          : undefined
-      }
-    />
-  </>
-)}
-       {mode === "signup" && (
-  <>
-    <Field
-      label="Organisation Name"
-      value={form.organisation}
-      onChange={upd("organisation")}
-      placeholder="City Diagnostics"
-    />
+        {mode === "signup" && (
+          <>
+            <Field
+              label="Organisation Name"
+              value={form.organisation}
+              onChange={upd("organisation")}
+              placeholder="City Diagnostics"
+              disabled={signupOtpSent}
+            />
 
-    <Field
-      label="Email Address"
-      type="email"
-      value={form.email}
-      onChange={upd("email")}
-      placeholder="you@lab.com"
-    />
+            <Field
+              label="Email Address"
+              type="email"
+              value={form.email}
+              onChange={upd("email")}
+              placeholder="you@lab.com"
+              disabled={signupOtpSent}
+            />
 
-    <Field
-      label="Mobile Number"
-      type="tel"
-      value={form.whatsapp}
-      onChange={upd("whatsapp")}
-      placeholder="94254XXXXX"
-    />
+            <Field
+              label="Mobile Number"
+              type="tel"
+              value={form.whatsapp}
+              onChange={upd("whatsapp")}
+              placeholder="94254XXXXX"
+              disabled={signupOtpSent}
+            />
 
-    <Field
-      label="Password"
-      type="password"
-      value={form.password}
-      onChange={upd("password")}
-      placeholder="Create password"
-    />
+            <Field
+              label="Password"
+              type="password"
+              value={form.password}
+              onChange={upd("password")}
+              placeholder="Create password"
+              disabled={signupOtpSent}
+            />
 
-    <Field
-      label="Confirm Password"
-      type="password"
-      value={form.confirmPassword}
-      onChange={upd("confirmPassword")}
-      placeholder="Confirm password"
-    />
-  </>
-)}
-{signupOtpSent && (
-  <Field
-    label="Phone Verification OTP"
-    value={form.signupOtp}
-    onChange={upd("signupOtp")}
-    placeholder="6-digit OTP"
-  />
-)}
-        {mode === "forgot" && !otpSent && (
+            <Field
+              label="Confirm Password"
+              type="password"
+              value={form.confirmPassword}
+              onChange={upd("confirmPassword")}
+              placeholder="Confirm password"
+              disabled={signupOtpSent}
+            />
+
+            {signupOtpSent && (
+              <Field
+                label="Phone Verification OTP"
+                value={form.signupOtp}
+                onChange={upd("signupOtp")}
+                placeholder="6-digit OTP"
+                inputMode="numeric"
+                maxLength={6}
+              />
+            )}
+          </>
+        )}
+
+        {mode === "forgot" && (
           <Field
             label="Email Address"
             type="email"
             value={form.email}
             onChange={upd("email")}
             placeholder="you@lab.com"
-         />
-        )}
-        {mode === "forgot" && otpSent && (
-          <>
-            <Field label="Enter OTP" value={form.otp} onChange={upd("otp")} placeholder="6-digit code" />
-            <Field label="New password" type="password" value={form.password} onChange={upd("password")} placeholder="New password" />
-          </>
+          />
         )}
 
         {error && <p className="text-xs text-primary">{error}</p>}
 
         <button
-  type="submit"
-  disabled={loading}
-  className="mt-2 h-11 w-full rounded-md bg-primary font-semibold text-primary-foreground transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
->
-  {loading
-    ? "Please wait..."
-    : mode === "login"
-      ? form.email.trim() &&
-        !form.email.includes("@")
-        ? otpSent
-          ? "Verify OTP"
-          : "Send OTP"
-        : "Login"
-      :mode === "signup"
-  ? signupOtpSent
-    ? "Verify Phone"
-    : "Create Account"
-        : otpSent
-          ? "Reset password"
-          : "Send OTP"}
-</button>
+          type="submit"
+          disabled={loading}
+          className="mt-2 h-11 w-full rounded-md bg-primary font-semibold text-primary-foreground transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {loading
+            ? "Please wait..."
+            : mode === "login"
+              ? form.email.trim() && !form.email.includes("@")
+                ? otpSent
+                  ? "Verify OTP"
+                  : "Send OTP"
+                : "Login"
+              : mode === "signup"
+                ? signupOtpSent
+                  ? "Verify Phone"
+                  : "Create Account"
+                : "Send Reset Link"}
+        </button>
 
         {mode !== "forgot" ? (
           <button
             type="button"
-            onClick={() => { setMode("forgot"); setError(""); }}
+            onClick={() => changeMode("forgot")}
             className="mx-auto block text-xs text-muted-foreground hover:text-primary"
           >
             Forgot password?
@@ -1225,7 +1194,7 @@ if (mode === "forgot") {
         ) : (
           <button
             type="button"
-            onClick={() => { setMode("login"); setOtpSent(false); setError(""); }}
+            onClick={() => changeMode("login")}
             className="mx-auto block text-xs text-muted-foreground hover:text-primary"
           >
             Back to login
@@ -1237,14 +1206,17 @@ if (mode === "forgot") {
 }
 
 function Field({
-  label, ...props
+  label,
+  ...props
 }: React.InputHTMLAttributes<HTMLInputElement> & { label: string }) {
   return (
     <label className="block">
-      <span className="mb-1 block text-xs font-medium text-muted-foreground">{label}</span>
+      <span className="mb-1 block text-xs font-medium text-muted-foreground">
+        {label}
+      </span>
       <input
         {...props}
-        className="h-10 w-full rounded-md border bg-background px-3 text-sm outline-none ring-primary/40 focus:ring-2"
+        className="h-10 w-full rounded-md border bg-background px-3 text-sm outline-none ring-primary/40 focus:ring-2 disabled:cursor-not-allowed disabled:opacity-60"
       />
     </label>
   );
