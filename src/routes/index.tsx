@@ -623,15 +623,17 @@ type Mode = "login" | "signup" | "forgot";
 function AuthCard() {
   const navigate = useNavigate();
   const [mode, setMode] = useState<Mode>("login");
-  const [form, setForm] = useState({
+ const [form, setForm] = useState({
   email: "",
   organisation: "",
   whatsapp: "",
   password: "",
   confirmPassword: "",
   otp: "",
+  signupOtp: "",
 });
   const [otpSent, setOtpSent] = useState(false);
+  const [signupOtpSent, setSignupOtpSent] = useState(false);
 const [loading, setLoading] = useState(false);
 const [error, setError] = useState("");
   
@@ -825,27 +827,31 @@ if (mode === "login") {
     // PHONE OTP — SEND OTP
     const phone = formatPhoneNumber(identifier);
 
-    if (!otpSent) {
-      const { error } =
-        await supabase.auth.signInWithOtp({
-          phone,
-          options: {
-            shouldCreateUser: false,
-          },
-        });
+   if (error) {
+  setError(error.message);
+  return;
+}
 
-      if (error) {
-        setError(error.message);
-        return;
-      }
+const { error: phoneError } =
+  await supabase.auth.signInWithOtp({
+    phone,
+    options: {
+      shouldCreateUser: false,
+    },
+  });
 
-      setOtpSent(true);
-      setForm({
-        ...form,
-        password: "",
-      });
+if (phoneError) {
+  setError(phoneError.message);
+  return;
+}
 
-      return;
+setSignupOtpSent(true);
+
+alert(
+  "We've sent an OTP to your mobile number."
+);
+
+return;
     }
 
     // PHONE OTP — VERIFY OTP
@@ -1041,6 +1047,14 @@ if (mode === "forgot") {
     />
   </>
 )}
+{signupOtpSent && (
+  <Field
+    label="Phone Verification OTP"
+    value={form.signupOtp}
+    onChange={upd("signupOtp")}
+    placeholder="6-digit OTP"
+  />
+)}
         {mode === "forgot" && !otpSent && (
           <Field
             label="Email Address"
@@ -1073,8 +1087,10 @@ if (mode === "forgot") {
           ? "Verify OTP"
           : "Send OTP"
         : "Login"
-      : mode === "signup"
-        ? "Create account"
+      :mode === "signup"
+  ? signupOtpSent
+    ? "Verify Phone"
+    : "Create Account"
         : otpSent
           ? "Reset password"
           : "Send OTP"}
