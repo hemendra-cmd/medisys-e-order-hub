@@ -631,10 +631,29 @@ function AuthCard() {
     otp: "",
 });
   const [otpSent, setOtpSent] = useState(false);
-  const [error, setError] = useState("");
-
+const [loading, setLoading] = useState(false);
+const [error, setError] = useState("");
+  
   const upd = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
     setForm({ ...form, [k]: e.target.value });
+
+  const formatPhoneNumber = (value: string) => {
+  const digits = value.replace(/\D/g, "");
+
+  if (digits.length === 10) {
+    return `+91${digits}`;
+  }
+
+  if (digits.length === 12 && digits.startsWith("91")) {
+    return `+${digits}`;
+  }
+
+  if (value.startsWith("+")) {
+    return value;
+  }
+
+  return `+${digits}`;
+};
 
 const submit = async (e: React.FormEvent) => {
   e.preventDefault();
@@ -684,77 +703,151 @@ navigate({ to: "/dashboard" });
 return;
   }
 if (mode === "login") {
-  if (!form.email || !form.password) {
-    setError("Email and password are required.");
+  const identifier = form.email.trim();
+  const isEmail = identifier.includes("@");
+
+  if (!identifier) {
+    setError("Please enter your email or mobile number.");
     return;
   }
 
-  const { data, error } =
-    await supabase.auth.signInWithPassword({
-      email: form.email.trim(),
-      password: form.password,
-    });
+  setLoading(true);
 
-  if (error) {
-    setError(error.message);
-    return;
-  }
+  try {
+    // EMAIL + PASSWORD LOGIN
+    if (isEmail) {
+      if (!form.password) {
+        setError("Please enter your password.");
+        return;
+      }
 
-  const user = data.user;
+      const { data, error } =
+        await supabase.auth.signInWithPassword({
+          email: identifier.toLowerCase(),
+          password: form.password,
+        });
 
-  if (!user) {
-    setError("Login succeeded, but user information was not found.");
-    return;
-  }
+      if (error) {
+        setError(error.message);
+        return;
+      }
 
-  const email = user.email?.toLowerCase() ?? "";
+      const user = data.user;
 
-  const adminEmails = [
-    "aryanshsaini11@gmail.com",
-    "medisysbpl@rediffmail.com",
-    "medisysbpl@gmail.com",
-  ];
+      if (!user) {
+        setError(
+          "Login succeeded, but user information was not found."
+        );
+        return;
+      }
 
-  if (!adminEmails.includes(email)) {
-    const { data: customer, error: customerError } =
-      await supabase
-        .from("customers")
-        .select("organisation_name, whatsapp")
-        .eq("user_id", user.id)
-        .maybeSingle();
+      const email = user.email?.toLowerCase() ?? "";
 
-    if (customerError) {
-      console.error(
-        "Failed to load customer profile:",
-        customerError
-      );
-    }
+      const adminEmails = [
+        "aryanshsaini11@gmail.com",
+        "medisysbpl@rediffmail.com",
+        "medisysbpl@gmail.com",
+      ];
 
-    const organisation =
-      customer?.organisation_name?.trim() ||
-      String(
-        user.user_metadata?.organisation_name ?? ""
-      ).trim();
+      if (!adminEmails.includes(email)) {
+        const { data: customer, error: customerError } =
+          await supabase
+            .from("customers")
+            .select("organisation_name, whatsapp")
+            .eq("user_id", user.id)
+            .maybeSingle();
 
-    if (!organisation) {
-      setError(
-        "Your organisation information could not be found."
-      );
+        if (customerError) {
+          console.error(
+            "Failed to load customer profile:",
+            customerError
+          );
+        }
+
+        const organisation =
+          customer?.organisation_name?.trim() ||
+          String(
+            user.user_metadata?.organisation_name ?? ""
+          ).trim();
+
+        if (!organisation) {
+          setError(
+            "Your organisation information could not be found."
+          );
+          return;
+        }
+
+        actions.login(
+          email,
+          organisation,
+          customer?.whatsapp ?? ""
+        );
+      }
+
+      navigate({
+        to: adminEmails.includes(email)
+          ? "/orders"
+          : "/dashboard",
+      });
+
       return;
     }
 
-    actions.login(
-      email,
-      organisation,
-      customer?.whatsapp ?? ""
-    );
-  }
+    // PHONE OTP — SEND OTP
+    const phone = formatPhoneNumber(identifier);
 
-  navigate({
-    to: adminEmails.includes(email)
-      ? "/orders"
-      : "/dashboard",
-  });
+    if (!otpSent) {
+      const { error } =
+        await supabase.auth.signInWithOtp({
+          phone,
+          options: {
+            shouldCreateUser: false,
+          },
+        });
+
+      if (error) {
+        setError(error.message);
+        return;
+      }
+
+      setOtpSent(true);
+      setForm({
+        ...form,
+        password: "",
+      });
+
+      return;
+    }
+
+    // PHONE OTP — VERIFY OTP
+    if (!form.password.trim()) {
+      setError("Please enter the OTP.");
+      return;
+    }
+
+    const { data, error } =
+      await supabase.auth.verifyOtp({
+        phone,
+        token: form.password.trim(),
+        type: "sms",
+      });
+
+    if (error) {
+      setError(error.message);
+      return;
+    }
+
+    if (!data.user) {
+      setError("OTP verification failed.");
+      return;
+    }
+
+    navigate({
+      to: "/dashboard",
+    });
+  } finally {
+    setLoading(false);
+  }
 
   return;
 }
@@ -811,12 +904,72 @@ if (mode === "forgot") {
       )}
 
       <form onSubmit={submit} className="space-y-3">
-        {mode === "login" && (
-          <>
-            <Field label="Email ID" type="email" value={form.email} onChange={upd("email")} placeholder="you@lab.com" />
-            <Field label="Password" type="password" value={form.password} onChange={upd("password")} placeholder="••••••••" />
-          </>
-        )}
+       {mode === "login" && (
+  <>
+    <Field
+      label="Email ID or Mobile Number"
+      type="text"
+      value={form.email}
+      onChange={(e) => {
+        setForm({
+          ...form,
+          email: e.target.value,
+          password: "",
+        });
+
+        setOtpSent(false);
+        setError("");
+      }}
+      placeholder="Email or 10-digit mobile number"
+    />
+
+    <Field
+      label={
+        form.email.trim() &&
+        !form.email.includes("@") &&
+        otpSent
+          ? "Enter OTP"
+          : "Password"
+      }
+      type={
+        form.email.trim() &&
+        !form.email.includes("@") &&
+        otpSent
+          ? "text"
+          : "password"
+      }
+      value={form.password}
+      onChange={upd("password")}
+      placeholder={
+        form.email.trim() &&
+        !form.email.includes("@")
+          ? otpSent
+            ? "Enter 6-digit OTP"
+            : "OTP will be sent to this number"
+          : "••••••••"
+      }
+      disabled={
+        !!form.email.trim() &&
+        !form.email.includes("@") &&
+        !otpSent
+      }
+      inputMode={
+        form.email.trim() &&
+        !form.email.includes("@") &&
+        otpSent
+          ? "numeric"
+          : undefined
+      }
+      maxLength={
+        form.email.trim() &&
+        !form.email.includes("@") &&
+        otpSent
+          ? 6
+          : undefined
+      }
+    />
+  </>
+)}
         {mode === "signup" && (
           <>
             <Field
@@ -870,11 +1023,25 @@ if (mode === "forgot") {
         {error && <p className="text-xs text-primary">{error}</p>}
 
         <button
-          type="submit"
-          className="mt-2 h-11 w-full rounded-md bg-primary font-semibold text-primary-foreground transition-colors hover:bg-primary-hover"
-        >
-          {mode === "login" ? "Login" : mode === "signup" ? "Create account" : otpSent ? "Reset password" : "Send OTP"}
-        </button>
+  type="submit"
+  disabled={loading}
+  className="mt-2 h-11 w-full rounded-md bg-primary font-semibold text-primary-foreground transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
+>
+  {loading
+    ? "Please wait..."
+    : mode === "login"
+      ? form.email.trim() &&
+        !form.email.includes("@")
+        ? otpSent
+          ? "Verify OTP"
+          : "Send OTP"
+        : "Login"
+      : mode === "signup"
+        ? "Create account"
+        : otpSent
+          ? "Reset password"
+          : "Send OTP"}
+</button>
 
         {mode !== "forgot" ? (
           <button
