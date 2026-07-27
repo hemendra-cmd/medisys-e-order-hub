@@ -14,6 +14,12 @@ import {
 } from "lucide-react";
 import bannerImage from "../assets/MEDISYS BANNER.jpeg";
 import founderImage from "../assets/founder.jpeg";
+import agappeLogo from "../assets/agappe.jpeg";
+import boditechLogo from "../assets/boditech.jpeg";
+import matrixLabsLogo from "../assets/matrix-labs.jpeg";
+import nasmedLogo from "../assets/nasmed.jpeg";
+import peerlessLogo from "../assets/peerless.jpeg";
+import reckonLogo from "../assets/reckon.jpeg";
 import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/")({
@@ -375,25 +381,27 @@ function Landing() {
     </div>
 
     <div className="mt-16 grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-6">
-
-      {[
-        "AGAPPE",
-        "MATRIX LABS",
-        "BODITECH",
-        "RECKON",
-        "PEERLESS",
-        "NASMED",
-      ].map((brand) => (
-        <div
-          key={brand}
-          className="flex h-28 items-center justify-center rounded-3xl border bg-card text-center text-lg font-semibold shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
-        >
-          {brand}
-        </div>
-      ))}
-
+  {[
+    { name: "Agappe", logo: agappeLogo },
+    { name: "Matrix Labs", logo: matrixLabsLogo },
+    { name: "Boditech", logo: boditechLogo },
+    { name: "Reckon Diagnostics", logo: reckonLogo },
+    { name: "Peerless", logo: peerlessLogo },
+    { name: "Nasmed", logo: nasmedLogo },
+  ].map((brand) => (
+    <div
+      key={brand.name}
+      className="flex h-28 items-center justify-center overflow-hidden rounded-3xl border bg-white p-4 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
+    >
+      <img
+        src={brand.logo}
+        alt={`${brand.name} logo`}
+        className="max-h-16 w-full object-contain"
+        loading="lazy"
+      />
     </div>
-
+  ))}
+</div>
   </div>
 </section>
       <section className="py-24">
