@@ -724,15 +724,24 @@ if (data.user) {
   }
 }
     
-actions.signup({
-  email: form.email.trim().toLowerCase(),
-  organisation: form.organisation.trim(),
-  whatsapp: phone,
-});
+const { error: phoneOtpError } =
+  await supabase.auth.signInWithOtp({
+    phone,
+    options: {
+      shouldCreateUser: false,
+    },
+  });
 
-navigate({ to: "/dashboard" });
+if (phoneOtpError) {
+  setError(phoneOtpError.message);
+  return;
+}
+
+setSignupOtpSent(true);
+
+alert("Account created successfully. Please verify your mobile number.");
+
 return;
-  }
 if (mode === "login") {
   const identifier = form.email.trim();
   const isEmail = identifier.includes("@");
