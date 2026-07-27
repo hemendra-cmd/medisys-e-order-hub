@@ -824,58 +824,35 @@ if (mode === "login") {
       return;
     }
 
-    // PHONE OTP — SEND OTP
-    const phone = formatPhoneNumber(identifier);
 
-   if (error) {
-  setError(error.message);
+   // PHONE OTP — SEND OTP
+const phone = formatPhoneNumber(identifier);
+
+if (!/^\+91[6-9]\d{9}$/.test(phone)) {
+  setError("Please enter a valid 10-digit Indian mobile number.");
   return;
 }
 
-const { error: phoneError } =
-  await supabase.auth.signInWithOtp({
-    phone,
-    options: {
-      shouldCreateUser: false,
-    },
-  });
+if (!otpSent) {
+  const { error: phoneError } =
+    await supabase.auth.signInWithOtp({
+      phone,
+      options: {
+        shouldCreateUser: false,
+      },
+    });
 
-if (phoneError) {
-  setError(phoneError.message);
+  if (phoneError) {
+    setError(phoneError.message);
+    return;
+  }
+
+  setOtpSent(true);
+
+  alert("We've sent an OTP to your mobile number.");
+
   return;
 }
-
-setSignupOtpSent(true);
-
-alert(
-  "We've sent an OTP to your mobile number."
-);
-
-return;
-    }
-
-    // PHONE OTP — VERIFY OTP
-    if (!form.password.trim()) {
-      setError("Please enter the OTP.");
-      return;
-    }
-
-    const { data, error } =
-      await supabase.auth.verifyOtp({
-        phone,
-        token: form.password.trim(),
-        type: "sms",
-      });
-
-    if (error) {
-      setError(error.message);
-      return;
-    }
-
-    if (!data.user) {
-      setError("OTP verification failed.");
-      return;
-    }
 
     navigate({
       to: "/dashboard",
