@@ -807,12 +807,21 @@ function AuthCard() {
               },
             },
           });
-if (!signupData.user) {
-  setError("Account creation failed. User information was not returned.");
-  return;
-}
 
-const { error: profileError } = await supabase
+        if (signupError) {
+          setError(signupError.message);
+          return;
+        }
+
+        if (!signupData.session || !signupData.user) {
+          setError(
+            "Your account was created, but a session was not started. In Supabase, disable Confirm email for this signup flow, or verify the email and log in first."
+          );
+          return;
+        }
+
+
+const { error: customerError } = await supabase
   .from("customers")
   .upsert(
     {
@@ -826,40 +835,20 @@ const { error: profileError } = await supabase
     }
   );
 
-if (profileError) {
-  console.error("Customer profile error:", profileError);
-  setError(profileError.message);
+if (customerError) {
+  console.error("Customer profile error:", customerError);
+  setError(customerError.message);
   return;
 }
-        if (signupError) {
-          setError(signupError.message);
-          return;
-        }
 
-        if (!signupData.session || !signupData.user) {
-          setError(
-            "Your account was created, but a session was not started. In Supabase, disable Confirm email for this signup flow, or verify the email and log in first."
-          );
-          return;
-        }
+actions.signup({
+  email,
+  organisation,
+  whatsapp: phone,
+});
 
-        const { error: phoneUpdateError } = await supabase.auth.updateUser({
-          phone,
-        });
-
-        if (phoneUpdateError) {
-          setError(phoneUpdateError.message);
-          return;
-        }
-
-        setSignupOtpSent(true);
-        setForm((current) => ({
-          ...current,
-          signupOtp: "",
-        }));
-
-        alert("An OTP has been sent to your mobile number.");
-        return;
+navigate({ to: "/dashboard" });
+return;
       }
 
       if (mode === "login") {
