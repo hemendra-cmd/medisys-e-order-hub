@@ -719,67 +719,58 @@ function AuthCard() {
           return;
         }
 
-        const { data: signupData, error: signupError } =
-          await supabase.auth.signUp({
-            email,
-            password: form.password,
-            options: {
-              data: {
-                organisation_name: organisation,
-              },
-            },
-          });
+       const { data: signupData, error: signupError } =
+  await supabase.auth.signUp({
+    email,
+    password: form.password,
+    options: {
+      data: {
+        organisation_name: organisation,
+      },
+    },
+  });
 
-        if (signupError) {
-          setError(signupError.message);
-          return;
-        }
+if (signupError) {
+  setError(signupError.message);
+  return;
+}
 
-        if (!signupData.user) {
-          setError("Account creation failed. Please try another email address.");
-          return;
-        }
+const newUser = signupData.user;
 
-        if (signupData.session) {
-          const { error: customerError } = await supabase
-            .from("customers")
-            .upsert(
-              {
-                user_id: signupData.user.id,
-                email,
-                organisation_name: organisation,
-                whatsapp: null,
-              },
-              {
-                onConflict: "user_id",
-              }
-            );
+if (!newUser) {
+  setError(
+    "Account could not be created. Please use another email address."
+  );
+  return;
+}
 
-          if (customerError) {
-            setError(customerError.message);
-            return;
-          }
+const { error: profileError } = await supabase
+  .from("customers")
+  .upsert(
+    {
+      user_id: newUser.id,
+      organisation_name: organisation,
+      email,
+      whatsapp: null,
+    },
+    {
+      onConflict: "user_id",
+    }
+  );
 
-          actions.signup({
-            email,
-            organisation,
-            whatsapp: "",
-          });
+if (profileError) {
+  setError(profileError.message);
+  return;
+}
 
-          navigate({ to: "/dashboard" });
-          return;
-        }
+actions.signup({
+  email,
+  organisation,
+  whatsapp: "",
+});
 
-        alert("Account created. Please confirm your email, then return and log in.");
-        setMode("login");
-        setForm({
-          email,
-          organisation: "",
-          password: "",
-          confirmPassword: "",
-        });
-        return;
-      }
+navigate({ to: "/dashboard" });
+return;
 
       if (mode === "login") {
         const email = form.email.trim().toLowerCase();
