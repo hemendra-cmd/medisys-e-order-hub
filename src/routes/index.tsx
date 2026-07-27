@@ -731,7 +731,7 @@ function AuthCard() {
   });
 
 if (signupError) {
-  setError(signupError.message);
+  setError(`SIGNUP ERROR: ${signupError.message}`);
   return;
 }
 
