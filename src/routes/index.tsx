@@ -993,7 +993,7 @@ if (mode === "forgot") {
       type="tel"
       value={form.whatsapp}
       onChange={upd("whatsapp")}
-      placeholder="9425405655"
+      placeholder="94254XXXXX"
     />
 
     <Field
