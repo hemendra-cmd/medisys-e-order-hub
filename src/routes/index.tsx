@@ -753,10 +753,7 @@ function AuthCard() {
               }
             );
 
-  .select();
-
-console.log("Customer:", data);
-console.log("Error:", error);
+  
           if (customerError) {
             console.error("Failed to save customer profile:", customerError);
             setError(customerError.message);
