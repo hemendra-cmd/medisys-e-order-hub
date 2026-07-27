@@ -663,6 +663,35 @@ const submit = async (e: React.FormEvent) => {
   setError("");
 
   if (mode === "signup") {
+    if (signupOtpSent) {
+  if (!form.signupOtp.trim()) {
+    setError("Please enter the OTP.");
+    return;
+  }
+
+  const { error } = await supabase.auth.verifyOtp({
+    phone: formatPhoneNumber(form.whatsapp),
+    token: form.signupOtp.trim(),
+    type: "phone_change",
+  });
+
+  if (error) {
+    setError(error.message);
+    return;
+  }
+
+  actions.signup({
+    email: form.email.trim().toLowerCase(),
+    organisation: form.organisation.trim(),
+    whatsapp: formatPhoneNumber(form.whatsapp),
+  });
+
+  navigate({
+    to: "/dashboard",
+  });
+
+  return;
+}
     if (
   !form.organisation ||
   !form.email ||
@@ -843,24 +872,28 @@ if (!/^\+91[6-9]\d{9}$/.test(phone)) {
 }
 
 if (!otpSent) {
-  const { error: phoneError } =
-    await supabase.auth.signInWithOtp({
-      phone,
-      options: {
-        shouldCreateUser: false,
-      },
-    });
-
-  if (phoneError) {
-    setError(phoneError.message);
-    return;
-  }
-
-  setOtpSent(true);
-
-  alert("We've sent an OTP to your mobile number.");
-
+  if (!data.session) {
+  setError(
+    "Please verify your email first, then log in and add your mobile number."
+  );
   return;
+}
+
+const { error: phoneOtpError } =
+  await supabase.auth.updateUser({
+    phone,
+  });
+
+if (phoneOtpError) {
+  setError(phoneOtpError.message);
+  return;
+}
+
+setSignupOtpSent(true);
+
+alert("An OTP has been sent to your mobile number.");
+
+return;
 }
 if (!data.user) {
   setError("OTP verification failed.");
