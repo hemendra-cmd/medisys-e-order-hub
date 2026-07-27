@@ -664,6 +664,67 @@ const submit = async (e: React.FormEvent) => {
 
   if (mode === "signup") {
     if (signupOtpSent) {
+  const phone = formatPhoneNumber(form.whatsapp);
+  const otp = form.signupOtp.trim();
+
+  if (!otp) {
+    setError("Please enter the OTP.");
+    return;
+  }
+
+  const { data: verifyData, error: verifyError } =
+    await supabase.auth.verifyOtp({
+      phone,
+      token: otp,
+      type: "phone_change",
+    });
+
+  if (verifyError) {
+    console.error("Phone verification error:", verifyError);
+    setError(verifyError.message);
+    return;
+  }
+
+  const verifiedUser = verifyData.user;
+
+  if (!verifiedUser) {
+    setError("Phone verification failed.");
+    return;
+  }
+
+  const { error: customerError } = await supabase
+    .from("customers")
+    .upsert(
+      {
+        user_id: verifiedUser.id,
+        email: form.email.trim().toLowerCase(),
+        organisation_name: form.organisation.trim(),
+        whatsapp: phone,
+      },
+      {
+        onConflict: "user_id",
+      }
+    );
+
+  if (customerError) {
+    console.error("Customer profile error:", customerError);
+    setError(customerError.message);
+    return;
+  }
+
+  actions.signup({
+    email: form.email.trim().toLowerCase(),
+    organisation: form.organisation.trim(),
+    whatsapp: phone,
+  });
+
+  navigate({
+    to: "/dashboard",
+  });
+
+  return;
+}
+    if (signupOtpSent) {
   if (!form.signupOtp.trim()) {
     setError("Please enter the OTP.");
     return;
