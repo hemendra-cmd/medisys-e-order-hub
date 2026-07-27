@@ -13,7 +13,7 @@ import {
   Star,
 } from "lucide-react";
 import bannerImage from "../assets/MEDISYS BANNER.jpeg";
-import founderImage from "../assets/founder.jpeg";
+import founderImage from "../assets/founder.png";
 import agappeLogo from "../assets/agappe.jpeg";
 import boditechLogo from "../assets/boditech.jpeg";
 import matrixLabsLogo from "../assets/matrix labs.jpeg";
