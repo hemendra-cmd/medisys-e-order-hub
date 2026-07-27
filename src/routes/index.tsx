@@ -752,7 +752,23 @@ function AuthCard() {
                 onConflict: "user_id",
               }
             );
+const { data, error } = await supabase
+  .from("customers")
+  .upsert(
+    {
+      user_id: verifiedUser.id,
+      email: form.email.trim().toLowerCase(),
+      organisation_name: form.organisation.trim(),
+      whatsapp: phone,
+    },
+    {
+      onConflict: "user_id",
+    }
+  )
+  .select();
 
+console.log("Customer:", data);
+console.log("Error:", error);
           if (customerError) {
             console.error("Failed to save customer profile:", customerError);
             setError(customerError.message);
