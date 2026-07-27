@@ -771,7 +771,7 @@ actions.signup({
 
 navigate({ to: "/dashboard" });
 return;
-
+      }
       if (mode === "login") {
         const email = form.email.trim().toLowerCase();
 
