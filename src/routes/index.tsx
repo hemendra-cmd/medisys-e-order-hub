@@ -853,7 +853,45 @@ if (!otpSent) {
 
   return;
 }
+if (!data.user) {
+  setError("OTP verification failed.");
+  return;
+}
 
+const user = data.user;
+
+const { data: customer, error: customerError } =
+  await supabase
+    .from("customers")
+    .select("organisation_name, whatsapp")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+if (customerError) {
+  console.error(
+    "Failed to load customer profile:",
+    customerError
+  );
+}
+
+const organisation =
+  customer?.organisation_name?.trim() ||
+  String(user.user_metadata?.organisation_name ?? "").trim();
+
+if (!organisation) {
+  setError("Your organisation information could not be found.");
+  return;
+}
+
+actions.login(
+  user.email ?? "",
+  organisation,
+  customer?.whatsapp ?? ""
+);
+
+navigate({
+  to: "/dashboard",
+});
     navigate({
       to: "/dashboard",
     });
