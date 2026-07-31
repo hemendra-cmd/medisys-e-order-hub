@@ -24,11 +24,89 @@ export function WhereWeWork() {
         </div>
 
         <div className="mt-16 rounded-[2.5rem] border border-white/10 bg-white/[0.04] p-4 shadow-2xl backdrop-blur-sm sm:p-8">
-          <div className="flex min-h-[420px] items-center justify-center rounded-[2rem] border border-dashed border-white/15 bg-black/20">
-            <div className="max-w-md px-6 text-center">
-              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-sky-400/20 bg-sky-400/10">
-                <span className="text-2xl">⌖</span>
-              </div>
+          <div className="relative min-h-[520px] overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950/80">
+  {/* Background grid */}
+  <div
+    className="pointer-events-none absolute inset-0 opacity-20"
+    style={{
+      backgroundImage:
+        "linear-gradient(rgba(125,211,252,0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(125,211,252,0.12) 1px, transparent 1px)",
+      backgroundSize: "42px 42px",
+    }}
+  />
+
+  {/* Decorative glow */}
+  <div className="pointer-events-none absolute left-1/2 top-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full bg-sky-500/10 blur-3xl" />
+
+  {/* Top information bar */}
+  <div className="relative z-10 flex flex-col gap-4 border-b border-white/10 px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
+    <div>
+      <p className="text-xs font-semibold uppercase tracking-[0.22em] text-sky-400">
+        Live Service Coverage
+      </p>
+
+      <h3 className="mt-1 text-xl font-semibold">
+        Madhya Pradesh Network
+      </h3>
+    </div>
+
+    <div className="flex flex-wrap gap-2">
+      <div className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-slate-300">
+        Headquarters: Bhopal
+      </div>
+
+      <div className="rounded-full border border-sky-400/20 bg-sky-400/10 px-4 py-2 text-sm text-sky-300">
+        Growing Coverage
+      </div>
+    </div>
+  </div>
+
+  {/* Temporary map stage */}
+  <div className="relative z-10 grid min-h-[430px] items-center gap-8 px-6 py-10 lg:grid-cols-[0.72fr_1.28fr] lg:px-10">
+    <div>
+      <p className="text-sm font-semibold uppercase tracking-[0.2em] text-sky-400">
+        Regional Reach
+      </p>
+
+      <h4 className="mt-4 text-3xl font-semibold tracking-tight">
+        Connecting laboratories across Madhya Pradesh.
+      </h4>
+
+      <p className="mt-5 leading-7 text-slate-400">
+        Our Bhopal-based distribution network supports diagnostic centres,
+        laboratories and healthcare professionals throughout the state.
+      </p>
+
+      <div className="mt-8 grid grid-cols-2 gap-3">
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+          <p className="text-2xl font-semibold text-white">Bhopal</p>
+          <p className="mt-1 text-sm text-slate-400">Central hub</p>
+        </div>
+
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+          <p className="text-2xl font-semibold text-white">MP</p>
+          <p className="mt-1 text-sm text-slate-400">Service region</p>
+        </div>
+      </div>
+    </div>
+
+    <div className="relative flex min-h-[330px] items-center justify-center rounded-3xl border border-white/10 bg-black/20">
+      <div className="text-center">
+        <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-sky-400/30 bg-sky-400/10 shadow-[0_0_50px_rgba(56,189,248,0.18)]">
+          <span className="text-3xl text-sky-300">⌖</span>
+        </div>
+
+        <p className="mt-5 font-semibold text-white">
+          Accurate district map comes next
+        </p>
+
+        <p className="mt-2 text-sm text-slate-400">
+          No temporary or incorrect outline will be used.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
 
               <h3 className="mt-6 text-2xl font-semibold">
                 Interactive service map
