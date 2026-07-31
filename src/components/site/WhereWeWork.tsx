@@ -1,7 +1,9 @@
 import { IndiaMap } from "./IndiaMap";
+
 export function WhereWeWork() {
   return (
     <section className="relative overflow-hidden bg-slate-950 px-4 py-24 text-white sm:px-6 lg:px-8">
+      {/* Background Effects */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute left-1/2 top-0 h-96 w-96 -translate-x-1/2 rounded-full bg-sky-500/10 blur-3xl" />
         <div className="absolute bottom-0 left-0 h-72 w-72 rounded-full bg-cyan-400/5 blur-3xl" />
@@ -9,6 +11,7 @@ export function WhereWeWork() {
       </div>
 
       <div className="relative mx-auto max-w-7xl">
+        {/* Heading */}
         <div className="mx-auto max-w-3xl text-center">
           <p className="text-sm font-semibold uppercase tracking-[0.28em] text-sky-400">
             Medisys Service Network
@@ -24,8 +27,11 @@ export function WhereWeWork() {
           </p>
         </div>
 
+        {/* Main Card */}
         <div className="mt-16 rounded-[2.5rem] border border-white/10 bg-white/[0.04] p-4 shadow-2xl backdrop-blur-sm sm:p-8">
-          <div className="relative min-h-[520px] overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950/80">
+          <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950/80">
+
+            {/* Grid Background */}
             <div
               className="pointer-events-none absolute inset-0 opacity-20"
               style={{
@@ -35,8 +41,10 @@ export function WhereWeWork() {
               }}
             />
 
-            <div className="pointer-events-none absolute left-1/2 top-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full bg-sky-500/10 blur-3xl" />
+            {/* Glow */}
+            <div className="pointer-events-none absolute left-1/2 top-1/2 h-80 w-80 -translate-x-1/2 -translate-y-1/2 rounded-full bg-sky-500/10 blur-3xl" />
 
+            {/* Top Bar */}
             <div className="relative z-10 flex flex-col gap-4 border-b border-white/10 px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.22em] text-sky-400">
@@ -59,8 +67,11 @@ export function WhereWeWork() {
               </div>
             </div>
 
-            <div className="relative z-10 grid min-h-[430px] items-center gap-8 px-6 py-10 lg:grid-cols-[0.72fr_1.28fr] lg:px-10">
-              <div>
+            {/* Content */}
+            <div className="relative z-10 grid min-h-[430px] gap-10 px-6 py-10 lg:grid-cols-[0.72fr_1.28fr] lg:px-10">
+
+              {/* Left Side */}
+              <div className="flex flex-col justify-center">
                 <p className="text-sm font-semibold uppercase tracking-[0.2em] text-sky-400">
                   Regional Reach
                 </p>
@@ -75,30 +86,34 @@ export function WhereWeWork() {
                   the state.
                 </p>
 
-                <div className="mt-8 grid grid-cols-2 gap-3">
-                  <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                    <p className="text-2xl font-semibold text-white">Bhopal</p>
+                <div className="mt-8 grid grid-cols-2 gap-4">
+                  <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+                    <p className="text-2xl font-semibold text-white">
+                      Bhopal
+                    </p>
+
                     <p className="mt-1 text-sm text-slate-400">
-                      Central hub
+                      Central Hub
                     </p>
                   </div>
 
-                  <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                    <p className="text-2xl font-semibold text-white">MP</p>
+                  <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+                    <p className="text-2xl font-semibold text-white">
+                      MP
+                    </p>
+
                     <p className="mt-1 text-sm text-slate-400">
-                      Service region
+                      Service Region
                     </p>
                   </div>
                 </div>
               </div>
 
+              {/* Right Side */}
               <div className="relative min-h-[420px] overflow-hidden rounded-3xl border border-white/10 bg-black/20">
-  <IndiaMap />
-</div>
-
-                  
-               
+                <IndiaMap />
               </div>
+
             </div>
           </div>
         </div>
