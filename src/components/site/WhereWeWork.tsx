@@ -96,13 +96,7 @@ export function WhereWeWork() {
   <IndiaMap />
 </div>
 
-                  <p className="mt-5 font-semibold text-white">
-                    Accurate district map comes next
-                  </p>
-
-                  <p className="mt-2 text-sm text-slate-400">
-                    No temporary or incorrect outline will be used.
-                  </p>
+                  
                 </div>
               </div>
             </div>
