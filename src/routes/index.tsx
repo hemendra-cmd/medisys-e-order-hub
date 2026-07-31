@@ -18,6 +18,7 @@ import agappeLogo from "../assets/agappe.jpeg";
 import boditechLogo from "../assets/boditech.jpeg";
 import matrixLabsLogo from "../assets/matrix labs.jpeg";
 import nasmedLogo from "../assets/nasmed.jpeg";
+import { WhereWeWork } from "@/components/site/WhereWeWork";
 import peerlessLogo from "../assets/peerless.jpeg";
 import reckonLogo from "../assets/reckon.jpeg";
 import { supabase } from "@/lib/supabase";
@@ -572,7 +573,7 @@ function Landing() {
     </div>
   </div>
 </section>
-
+<WhereWeWork />
 <section className="bg-background py-24">
   <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
     <div className="relative overflow-hidden rounded-[2.5rem] bg-primary px-6 py-16 text-center text-primary-foreground shadow-xl sm:px-12 lg:px-20 lg:py-20">
