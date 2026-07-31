@@ -17,6 +17,9 @@ export function IndiaMap() {
   return (
     <div className="relative h-full min-h-[420px] overflow-hidden rounded-3xl">
 
+      {/* Blue ambient glow */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(14,165,233,0.12),transparent_60%)]" />
+
       {/* India */}
       <img
         src={indiaOutline}
@@ -29,16 +32,24 @@ export function IndiaMap() {
       />
 
       {/* MP */}
-      <img
-        src={mpDistrictMap}
-        alt="Madhya Pradesh"
-        className={`absolute left-1/2 top-1/2 transition-all duration-1000 ${
+      <div
+        className={`absolute left-1/2 top-1/2 w-[84%] -translate-x-1/2 -translate-y-1/2 transition-all duration-1000 ${
           zoomed
-            ? "-translate-x-1/2 -translate-y-1/2 w-[72%] opacity-100"
-            : "translate-x-[220px] translate-y-[140px] w-28 opacity-0"
+            ? "scale-100 opacity-100"
+            : "scale-50 opacity-0"
         }`}
-      />
-
+      >
+        <img
+          src={mpDistrictMap}
+          alt="Madhya Pradesh"
+          className="w-full object-contain"
+          style={{
+            filter:
+              "invert(1) brightness(.82) contrast(1.3) saturate(.15) hue-rotate(180deg)",
+            mixBlendMode: "screen",
+          }}
+        />
+      </div>
     </div>
   );
 }
