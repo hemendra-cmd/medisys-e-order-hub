@@ -1,4 +1,4 @@
-
+import { IndiaMap } from "./IndiaMap";
 export function WhereWeWork() {
   return (
     <section className="relative overflow-hidden bg-slate-950 px-4 py-24 text-white sm:px-6 lg:px-8">
@@ -92,11 +92,9 @@ export function WhereWeWork() {
                 </div>
               </div>
 
-              <div className="relative flex min-h-[330px] items-center justify-center rounded-3xl border border-white/10 bg-black/20">
-                <div className="px-6 text-center">
-                  <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-sky-400/30 bg-sky-400/10 shadow-[0_0_50px_rgba(56,189,248,0.18)]">
-                    <span className="text-3xl text-sky-300">⌖</span>
-                  </div>
+              <div className="relative min-h-[420px] overflow-hidden rounded-3xl border border-white/10 bg-black/20">
+  <IndiaMap />
+</div>
 
                   <p className="mt-5 font-semibold text-white">
                     Accurate district map comes next
