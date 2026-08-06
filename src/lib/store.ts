@@ -369,16 +369,17 @@ async upsertProduct(p: Product) {
       if (!product) continue;
 
       const { error: itemError } = await supabase
-        .from("order_items")
-        .insert({
-          order_id: orderId,
-          product_id: product.id,
-          quantity: item.quantity,
-          price: 0,
-          brand: item.brand,
-          name: item.name,
-          pack_size: item.packSize,
-        });
+  .from("order_items")
+  .insert({
+    order_id: orderId,
+    product_id: product.id,
+    quantity: item.quantity,
+    price: 0,
+    brand: item.brand,
+    name: item.name,
+    pack_size: item.packSize,
+    availability_status: "pending",
+  });
 
       if (itemError) {
         console.error(
