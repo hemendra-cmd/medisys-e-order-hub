@@ -280,10 +280,106 @@ function OrdersPage() {
         ) : (
           <div className="divide-y rounded-lg border">
             {o.items.map((item, index) => (
-              <div
-                key={`${o.id}-${index}`}
-                className="flex items-start justify-between gap-4 p-3 sm:p-4"
-              >
+             <div
+  key={item.id ?? `${o.id}-${index}`}
+  className="flex flex-col gap-4 p-3 sm:p-4"
+>
+  <div className="flex items-start justify-between gap-4">
+    <div className="min-w-0">
+      <p className="text-xs font-semibold uppercase tracking-wide text-primary">
+        {item.brand || "No brand"}
+      </p>
+
+      <p className="mt-1 break-words text-sm font-semibold">
+        {item.name}
+      </p>
+
+      <p className="mt-1 text-xs text-muted-foreground">
+        Pack size: {item.packSize || "Not specified"}
+      </p>
+    </div>
+
+    <div className="shrink-0 text-right">
+      <p className="text-xs text-muted-foreground">
+        Quantity
+      </p>
+
+      <span className="mt-1 inline-flex min-w-10 justify-center rounded-full bg-secondary px-3 py-1 text-sm font-bold">
+        {item.quantity || 1}
+      </span>
+    </div>
+  </div>
+
+  <div className="flex flex-wrap gap-2">
+    {[
+      {
+        value: "available",
+        label: "Available",
+        activeClass:
+          "border-green-300 bg-green-50 text-green-700",
+      },
+      {
+        value: "awaited",
+        label: "Awaited",
+        activeClass:
+          "border-amber-300 bg-amber-50 text-amber-700",
+      },
+      {
+        value: "next_order",
+        label: "Next Order",
+        activeClass:
+          "border-blue-300 bg-blue-50 text-blue-700",
+      },
+    ].map((option) => {
+      const active =
+        item.availabilityStatus === option.value;
+
+      return (
+        <button
+          key={option.value}
+          type="button"
+          disabled={!item.id}
+          onClick={async () => {
+            if (!item.id) {
+              alert("This order item could not be identified.");
+              return;
+            }
+
+            const { error } = await supabase
+              .from("order_items")
+              .update({
+                availability_status: option.value,
+              })
+              .eq("id", item.id);
+
+            if (error) {
+              console.error(error);
+              alert("Could not update product availability.");
+              return;
+            }
+
+            await loadOrders();
+          }}
+          className={`rounded-md border px-3 py-2 text-xs font-semibold transition-colors ${
+            active
+              ? option.activeClass
+              : "bg-background text-muted-foreground hover:bg-secondary"
+          } disabled:cursor-not-allowed disabled:opacity-50`}
+        >
+          {active && <Check className="mr-1 inline h-3.5 w-3.5" />}
+
+          {option.label}
+        </button>
+      );
+    })}
+  </div>
+
+  {item.availabilityStatus === "pending" && (
+    <p className="text-xs text-muted-foreground">
+      Pending confirmation
+    </p>
+  )}
+</div>
                 <div className="min-w-0">
                   <p className="text-xs font-semibold uppercase tracking-wide text-primary">
                     {item.brand || "No brand"}
