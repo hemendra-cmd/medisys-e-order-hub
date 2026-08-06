@@ -39,7 +39,7 @@ function NotFoundComponent() {
         <div className="mt-6">
           <Link
             to="/"
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary-hover"
+            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover"
           >
             Go home
           </Link>
@@ -56,15 +56,10 @@ function ErrorComponent({
   error: Error;
   reset: () => void;
 }) {
-  console.error(error);
-
   const router = useRouter();
 
   useEffect(() => {
-    console.error(
-      "Root route error:",
-      error,
-    );
+    console.error(error);
   }, [error]);
 
   return (
@@ -75,26 +70,25 @@ function ErrorComponent({
         </h1>
 
         <p className="mt-2 text-sm text-muted-foreground">
-          Something went wrong. Try refreshing or head back home.
+          Something went wrong.
         </p>
 
-        <div className="mt-6 flex flex-wrap justify-center gap-2">
+        <div className="mt-6 flex gap-2 justify-center">
           <button
-            type="button"
             onClick={() => {
               router.invalidate();
               reset();
             }}
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover"
+            className="rounded-md bg-primary px-4 py-2 text-white"
           >
-            Try again
+            Try Again
           </button>
 
           <a
             href="/"
-            className="inline-flex items-center justify-center rounded-md border px-4 py-2 text-sm hover:bg-accent"
+            className="rounded-md border px-4 py-2"
           >
-            Go home
+            Home
           </a>
         </div>
       </div>
@@ -123,7 +117,7 @@ export const Route =
         {
           name: "description",
           content:
-            "Order pathological equipment, reagents, rapid tests, biochemistry items and lab accessories from Medisys. Fast, credit-friendly B2B portal.",
+            "Order pathological equipment, reagents, rapid tests, biochemistry items and lab accessories from Medisys.",
         },
         {
           property: "og:title",
@@ -133,7 +127,11 @@ export const Route =
         {
           property: "og:description",
           content:
-            "Trusted supplier for clinics and diagnostic labs across India.",
+            "Trusted supplier for diagnostic laboratories.",
+        },
+        {
+          property: "og:image",
+          content: logoAsset,
         },
         {
           property: "og:type",
@@ -145,35 +143,37 @@ export const Route =
         },
       ],
 
-     links: [
-  {
-    rel: "stylesheet",
-    href: appCss,
-  },
+      links: [
+        {
+          rel: "stylesheet",
+          href: appCss,
+        },
 
-  {
-    rel: "icon",
-    href: logoAsset,
-    type: "image/jpeg",
-  },
+        {
+          rel: "icon",
+          href: logoAsset,
+        },
 
-  {
-    rel: "shortcut icon",
-    href: logoAsset,
-    type: "image/jpeg",
-  },
+        {
+          rel: "shortcut icon",
+          href: logoAsset,
+        },
 
-  {
-    rel: "apple-touch-icon",
-    href: logoAsset,
-  },
-],
+        {
+          rel: "apple-touch-icon",
+          href: logoAsset,
+        },
+
+        {
+          rel: "mask-icon",
+          href: logoAsset,
+        },
+      ],
     }),
 
     shellComponent: RootShell,
     component: RootComponent,
-    notFoundComponent:
-      NotFoundComponent,
+    notFoundComponent: NotFoundComponent,
     errorComponent: ErrorComponent,
   });
 
@@ -201,9 +201,7 @@ function RootComponent() {
     Route.useRouteContext();
 
   return (
-    <QueryClientProvider
-      client={queryClient}
-    >
+    <QueryClientProvider client={queryClient}>
       <Outlet />
       <WhatsAppFab />
       <Analytics />
