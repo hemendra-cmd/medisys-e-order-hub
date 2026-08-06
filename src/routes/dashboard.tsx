@@ -9,13 +9,9 @@ import {
   useState,
 } from "react";
 import {
-  CheckCircle2,
   ChevronDown,
-  Clock3,
   Minus,
-  PackageOpen,
   Plus,
-  RotateCcw,
   Tag,
   X,
 } from "lucide-react";
@@ -25,10 +21,7 @@ import { SiteFooter } from "@/components/site/SiteFooter";
 import {
   actions,
   useStore,
-  type AvailabilityStatus,
   type Category,
-  type Order,
-  type OrderItem,
   type Product,
 } from "@/lib/store";
 import { supabase } from "@/lib/supabase";
@@ -164,12 +157,6 @@ function Dashboard() {
       (item) => item.productId === id,
     )?.quantity ?? 0;
 
-  const loadPreviousOrders = async () => {
-    if (!user?.email) {
-      setPreviousOrders([]);
-      setOrdersLoading(false);
-      return;
-    }
 
     setOrdersLoading(true);
 
@@ -258,10 +245,6 @@ function Dashboard() {
     setPreviousOrders(mappedOrders);
     setOrdersLoading(false);
   };
-
-  useEffect(() => {
-    void loadPreviousOrders();
-  }, [user?.email]);
 
   return (
     <div className="min-h-screen bg-background pb-16">
@@ -413,9 +396,7 @@ function Dashboard() {
   );
 }
 
-function CustomerOrderCard({
-  order,
-}: {
+ {
   order: Order;
 }) {
   const groups: {
@@ -659,11 +640,7 @@ function CustomerOrderCard({
   );
 }
 
-function StatusCount({
-  label,
-  count,
-  className,
-}: {
+: {
   label: string;
   count: number;
   className: string;
