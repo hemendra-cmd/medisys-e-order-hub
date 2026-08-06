@@ -27,11 +27,19 @@ export interface User {
 
 export type OrderStatus = "placed" | "preparing";
 
+export type AvailabilityStatus =
+  | "pending"
+  | "available"
+  | "awaited"
+  | "next_order";
+
 export interface OrderItem {
+  id?: string;
   brand: string;
   name: string;
   packSize: string;
   quantity: number;
+  availabilityStatus?: AvailabilityStatus;
 }
 
 export interface Order {
