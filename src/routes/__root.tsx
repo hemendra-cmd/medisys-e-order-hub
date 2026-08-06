@@ -12,7 +12,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url"; 
 import { WhatsAppFab } from "@/components/site/WhatsAppFab";
-import logoAsset from "@/assets/medisys-logo.png.asset.json";
+import logoAsset from "@/assets/MEDISYS.jpeg";
 
 function NotFoundComponent() {
   return (
