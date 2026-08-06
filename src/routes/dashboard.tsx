@@ -24,7 +24,6 @@ import {
   type Category,
   type Product,
 } from "@/lib/store";
-import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/dashboard")({
   component: Dashboard,
@@ -60,54 +59,51 @@ function Dashboard() {
   const products = useStore(
     (state) => state.products,
   );
+
   const cart = useStore(
     (state) => state.cart,
   );
-  const user = useStore(
-    (state) => state.user,
-  );
-
-  const [previousOrders, setPreviousOrders] =
-    useState<Order[]>([]);
-  const [ordersLoading, setOrdersLoading] =
-    useState(true);
 
   const [tab, setTab] =
     useState<Category>("offers");
-  const [query, setQuery] = useState("");
+
+  const [query, setQuery] =
+    useState("");
+
   const [brandFilter, setBrandFilter] =
     useState<string[]>([]);
+
   const [packFilter, setPackFilter] =
     useState<string[]>([]);
 
-  const brands = useMemo(
-    () =>
-      Array.from(
-        new Set(
-          products
-            .map((product) => product.brand)
-            .filter(Boolean),
-        ),
-      ).sort(),
-    [products],
-  );
+  const brands = useMemo(() => {
+    return Array.from(
+      new Set(
+        products
+          .map((product) => product.brand)
+          .filter(Boolean),
+      ),
+    ).sort((first, second) =>
+      first.localeCompare(second),
+    );
+  }, [products]);
 
-  const packs = useMemo(
-    () =>
-      Array.from(
-        new Set(
-          products
-            .map((product) => product.packSize)
-            .filter(Boolean),
-        ),
-      ).sort(),
-    [products],
-  );
+  const packs = useMemo(() => {
+    return Array.from(
+      new Set(
+        products
+          .map((product) => product.packSize)
+          .filter(Boolean),
+      ),
+    ).sort((first, second) =>
+      first.localeCompare(second),
+    );
+  }, [products]);
 
   const normalizedQuery =
     query.trim().toLowerCase();
 
-  const filtered = useMemo(() => {
+  const filteredProducts = useMemo(() => {
     return products.filter((product) => {
       if (!normalizedQuery) {
         if (
@@ -133,13 +129,18 @@ function Dashboard() {
         return false;
       }
 
-      if (
-        normalizedQuery &&
-        !`${product.brand} ${product.name} ${product.packSize}`
-          .toLowerCase()
-          .includes(normalizedQuery)
-      ) {
-        return false;
+      if (normalizedQuery) {
+        const searchableText =
+          `${product.brand} ${product.name} ${product.packSize}`
+            .toLowerCase();
+
+        if (
+          !searchableText.includes(
+            normalizedQuery,
+          )
+        ) {
+          return false;
+        }
       }
 
       return true;
@@ -147,103 +148,20 @@ function Dashboard() {
   }, [
     products,
     tab,
+    normalizedQuery,
     brandFilter,
     packFilter,
-    normalizedQuery,
   ]);
 
-  const qtyOf = (id: string) =>
-    cart.find(
-      (item) => item.productId === id,
-    )?.quantity ?? 0;
-
-
-    setOrdersLoading(true);
-
-    const {
-      data: ordersData,
-      error: ordersError,
-    } = await supabase
-      .from("orders")
-      .select("*")
-      .eq(
-        "email",
-        user.email.trim().toLowerCase(),
-      )
-      .order("created_at", {
-        ascending: false,
-      });
-
-    if (ordersError) {
-      console.error(
-        "Failed to load previous orders:",
-        ordersError,
-      );
-      setPreviousOrders([]);
-      setOrdersLoading(false);
-      return;
-    }
-
-    const orderIds = (
-      ordersData ?? []
-    ).map((order) => order.id);
-
-    let itemsData: any[] = [];
-
-    if (orderIds.length > 0) {
-      const {
-        data,
-        error: itemsError,
-      } = await supabase
-        .from("order_items")
-        .select("*")
-        .in("order_id", orderIds);
-
-      if (itemsError) {
-        console.error(
-          "Failed to load previous order items:",
-          itemsError,
-        );
-      } else {
-        itemsData = data ?? [];
-      }
-    }
-
-    const mappedOrders: Order[] = (
-      ordersData ?? []
-    ).map((order: any) => ({
-      id: order.id,
-      organisation:
-        order.organisation ?? "",
-      contact: order.phone ?? "",
-      status:
-        order.status === "preparing"
-          ? "preparing"
-          : "placed",
-      createdAt: new Date(
-        order.created_at,
-      ).getTime(),
-      items: itemsData
-        .filter(
-          (item: any) =>
-            item.order_id === order.id,
-        )
-        .map((item: any) => ({
-          id: item.id,
-          brand: item.brand ?? "",
-          name: item.name ?? "",
-          packSize:
-            item.pack_size ?? "",
-          quantity:
-            item.quantity ?? 1,
-          availabilityStatus:
-            (item.availability_status ??
-              "pending") as AvailabilityStatus,
-        })),
-    }));
-
-    setPreviousOrders(mappedOrders);
-    setOrdersLoading(false);
+  const quantityOf = (
+    productId: string,
+  ) => {
+    return (
+      cart.find(
+        (item) =>
+          item.productId === productId,
+      )?.quantity ?? 0
+    );
   };
 
   return (
@@ -253,6 +171,7 @@ function Dashboard() {
         onQueryChange={setQuery}
       />
 
+      {/* Product categories */}
       <div className="border-b bg-background">
         <div className="mx-auto flex max-w-7xl gap-1 overflow-x-auto px-4 py-2">
           {TABS.map((currentTab) => (
@@ -279,6 +198,7 @@ function Dashboard() {
         </div>
       </div>
 
+      {/* Filters */}
       <div className="mx-auto max-w-7xl px-4 py-4">
         <div className="flex flex-wrap items-center gap-2">
           <FilterButton
@@ -330,329 +250,67 @@ function Dashboard() {
         {(brandFilter.length > 0 ||
           packFilter.length > 0) && (
           <div className="mt-3 flex flex-wrap gap-1.5">
-            {brandFilter.map(
-              (brand) => (
-                <Chip
-                  key={`brand-${brand}`}
-                  label={brand}
-                  onRemove={() =>
-                    setBrandFilter(
-                      brandFilter.filter(
-                        (item) =>
-                          item !== brand,
-                      ),
-                    )
-                  }
-                />
-              ),
-            )}
+            {brandFilter.map((brand) => (
+              <Chip
+                key={`brand-${brand}`}
+                label={brand}
+                onRemove={() =>
+                  setBrandFilter(
+                    brandFilter.filter(
+                      (item) =>
+                        item !== brand,
+                    ),
+                  )
+                }
+              />
+            ))}
 
-            {packFilter.map(
-              (pack) => (
-                <Chip
-                  key={`pack-${pack}`}
-                  label={pack}
-                  onRemove={() =>
-                    setPackFilter(
-                      packFilter.filter(
-                        (item) =>
-                          item !== pack,
-                      ),
-                    )
-                  }
+            {packFilter.map((pack) => (
+              <Chip
+                key={`pack-${pack}`}
+                label={pack}
+                onRemove={() =>
+                  setPackFilter(
+                    packFilter.filter(
+                      (item) =>
+                        item !== pack,
+                    ),
+                  )
+                }
+              />
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Products */}
+      <main className="mx-auto max-w-7xl px-4 pb-10">
+        {filteredProducts.length === 0 ? (
+          <div className="rounded-lg border bg-card p-10 text-center text-sm text-muted-foreground">
+            No products match your filters.
+          </div>
+        ) : (
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {filteredProducts.map(
+              (product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  quantity={quantityOf(
+                    product.id,
+                  )}
                 />
               ),
             )}
           </div>
         )}
-      </div>
+      </main>
 
-      <div className="mx-auto max-w-7xl px-4 pb-10">
-        <main>
-          {filtered.length === 0 ? (
-            <div className="rounded-lg border bg-card p-10 text-center text-sm text-muted-foreground">
-              No products match your
-              filters.
-            </div>
-          ) : (
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {filtered.map(
-                (product) => (
-                  <ProductCard
-                    key={product.id}
-                    product={product}
-                    quantity={qtyOf(
-                      product.id,
-                    )}
-                  />
-                ),
-              )}
-            </div>
-          )}
-        </main>
-      </div>
-  <SiteFooter />
+      <SiteFooter />
     </div>
   );
 }
 
- {
-  order: Order;
-}) {
-  const groups: {
-    status: AvailabilityStatus;
-    title: string;
-    description: string;
-    items: OrderItem[];
-    containerClass: string;
-    badgeClass: string;
-  }[] = [
-    {
-      status: "available",
-      title: "Available Now",
-      description:
-        "These products are confirmed and can be prepared.",
-      items: order.items.filter(
-        (item) =>
-          item.availabilityStatus ===
-          "available",
-      ),
-      containerClass:
-        "border-green-200 bg-green-50/60",
-      badgeClass:
-        "bg-green-100 text-green-700",
-    },
-    {
-      status: "awaited",
-      title: "Awaited",
-      description:
-        "These products are currently unavailable and are being awaited.",
-      items: order.items.filter(
-        (item) =>
-          item.availabilityStatus ===
-          "awaited",
-      ),
-      containerClass:
-        "border-amber-200 bg-amber-50/60",
-      badgeClass:
-        "bg-amber-100 text-amber-700",
-    },
-    {
-      status: "next_order",
-      title: "Next Order",
-      description:
-        "These products may be included in your next purchase cycle.",
-      items: order.items.filter(
-        (item) =>
-          item.availabilityStatus ===
-          "next_order",
-      ),
-      containerClass:
-        "border-blue-200 bg-blue-50/60",
-      badgeClass:
-        "bg-blue-100 text-blue-700",
-    },
-    {
-      status: "pending",
-      title: "Pending Confirmation",
-      description:
-        "Our team is checking availability for these products.",
-      items: order.items.filter(
-        (item) =>
-          !item.availabilityStatus ||
-          item.availabilityStatus ===
-            "pending",
-      ),
-      containerClass:
-        "border-border bg-background",
-      badgeClass:
-        "bg-secondary text-muted-foreground",
-    },
-  ];
-
-  const confirmedCount =
-    groups[0].items.length;
-  const awaitedCount =
-    groups[1].items.length;
-  const nextOrderCount =
-    groups[2].items.length;
-  const pendingCount =
-    groups[3].items.length;
-
-  return (
-    <article className="overflow-hidden rounded-xl border bg-card shadow-card">
-      <div className="border-b bg-secondary/20 p-4 sm:p-5">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-          <div>
-            <div className="flex flex-wrap items-center gap-2">
-              <span
-                className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ${
-                  order.status ===
-                  "preparing"
-                    ? "bg-primary/10 text-primary"
-                    : "bg-amber-100 text-amber-700"
-                }`}
-              >
-                {order.status ===
-                "preparing" ? (
-                  <CheckCircle2 className="h-3.5 w-3.5" />
-                ) : (
-                  <Clock3 className="h-3.5 w-3.5" />
-                )}
-
-                {order.status ===
-                "preparing"
-                  ? "Under preparation"
-                  : "Order placed"}
-              </span>
-
-              <span className="text-xs text-muted-foreground">
-                {new Date(
-                  order.createdAt,
-                ).toLocaleString(
-                  "en-IN",
-                  {
-                    day: "numeric",
-                    month: "short",
-                    year: "numeric",
-                    hour: "numeric",
-                    minute: "2-digit",
-                  },
-                )}
-              </span>
-            </div>
-
-            <h3 className="mt-3 font-semibold">
-              Order #{order.id}
-            </h3>
-
-            <p className="mt-1 text-sm text-muted-foreground">
-              {order.items.length} products
-              in this order
-            </p>
-          </div>
-
-          <div className="flex flex-wrap gap-2">
-            <StatusCount
-              label="Available"
-              count={confirmedCount}
-              className="border-green-200 bg-green-50 text-green-700"
-            />
-
-            <StatusCount
-              label="Awaited"
-              count={awaitedCount}
-              className="border-amber-200 bg-amber-50 text-amber-700"
-            />
-
-            <StatusCount
-              label="Next"
-              count={nextOrderCount}
-              className="border-blue-200 bg-blue-50 text-blue-700"
-            />
-
-            <StatusCount
-              label="Pending"
-              count={pendingCount}
-              className="border-border bg-background text-muted-foreground"
-            />
-          </div>
-        </div>
-      </div>
-
-      <div className="space-y-4 p-4 sm:p-5">
-        {groups.map((group) => {
-          if (group.items.length === 0) {
-            return null;
-          }
-
-          return (
-            <section
-              key={group.status}
-              className={`overflow-hidden rounded-lg border ${group.containerClass}`}
-            >
-              <div className="flex flex-col gap-2 border-b border-current/10 p-4 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                  <h4 className="text-sm font-semibold">
-                    {group.title}
-                  </h4>
-
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    {group.description}
-                  </p>
-                </div>
-
-                <span
-                  className={`w-fit rounded-full px-3 py-1 text-xs font-semibold ${group.badgeClass}`}
-                >
-                  {group.items.length}{" "}
-                  {group.items.length === 1
-                    ? "product"
-                    : "products"}
-                </span>
-              </div>
-
-              <div className="divide-y">
-                {group.items.map(
-                  (item, index) => (
-                    <div
-                      key={
-                        item.id ??
-                        `${order.id}-${group.status}-${index}`
-                      }
-                      className="flex items-start justify-between gap-4 bg-card/80 p-4"
-                    >
-                      <div className="min-w-0">
-                        <p className="text-xs font-semibold uppercase tracking-wide text-primary">
-                          {item.brand ||
-                            "No brand"}
-                        </p>
-
-                        <p className="mt-1 break-words text-sm font-semibold">
-                          {item.name}
-                        </p>
-
-                        <p className="mt-1 text-xs text-muted-foreground">
-                          Pack size:{" "}
-                          {item.packSize ||
-                            "Not specified"}
-                        </p>
-                      </div>
-
-                      <div className="shrink-0 text-right">
-                        <p className="text-xs text-muted-foreground">
-                          Quantity
-                        </p>
-
-                        <span className="mt-1 inline-flex min-w-10 justify-center rounded-full bg-secondary px-3 py-1 text-sm font-bold">
-                          {item.quantity || 1}
-                        </span>
-                      </div>
-                    </div>
-                  ),
-                )}
-              </div>
-            </section>
-          );
-        })}
-      </div>
-    </article>
-  );
-}
-
-: {
-  label: string;
-  count: number;
-  className: string;
-}) {
-  return (
-    <span
-      className={`rounded-full border px-3 py-1 text-xs font-semibold ${className}`}
-    >
-      {label}: {count}
-    </span>
-  );
-}
 function ProductCard({
   product,
   quantity,
@@ -663,9 +321,9 @@ function ProductCard({
   return (
     <div className="group flex flex-col overflow-hidden rounded-lg border bg-card shadow-card transition-shadow hover:shadow-elevated">
       <div className="flex flex-1 flex-col p-4">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-3">
           <span className="text-xs font-semibold uppercase tracking-wide text-primary">
-            {product.brand}
+            {product.brand || "No brand"}
           </span>
 
           {product.isOffer && (
@@ -680,10 +338,12 @@ function ProductCard({
         </h3>
 
         <p className="mt-0.5 text-xs text-muted-foreground">
-          Pack: {product.packSize}
+          Pack:{" "}
+          {product.packSize ||
+            "Not specified"}
         </p>
 
-        <div className="mt-3 flex items-end justify-end">
+        <div className="mt-4 flex items-end justify-end">
           {quantity === 0 ? (
             <button
               type="button"
@@ -726,7 +386,7 @@ export function QtyControl({
           )
         }
         className="grid h-full w-8 place-items-center rounded-l-md text-primary hover:bg-accent"
-        aria-label="Decrease"
+        aria-label="Decrease quantity"
       >
         <Minus className="h-4 w-4" />
       </button>
@@ -744,7 +404,7 @@ export function QtyControl({
           )
         }
         className="grid h-full w-8 place-items-center rounded-r-md text-primary hover:bg-accent"
-        aria-label="Increase"
+        aria-label="Increase quantity"
       >
         <Plus className="h-4 w-4" />
       </button>
@@ -774,7 +434,6 @@ function Chip({
     </span>
   );
 }
-
 function FilterButton({
   label,
   options,
@@ -784,25 +443,27 @@ function FilterButton({
   label: string;
   options: string[];
   selected: string[];
-  onChange: (
-    next: string[],
-  ) => void;
+  onChange: (next: string[]) => void;
 }) {
   const [open, setOpen] =
     useState(false);
+
   const [search, setSearch] =
     useState("");
+
   const [draft, setDraft] =
     useState<string[]>(selected);
 
-  const ref =
+  const containerRef =
     useRef<HTMLDivElement>(null);
+
   const listRef =
     useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (open) {
       setDraft(selected);
+      setSearch("");
     }
   }, [open, selected]);
 
@@ -815,8 +476,8 @@ function FilterButton({
       event: MouseEvent,
     ) => {
       if (
-        ref.current &&
-        !ref.current.contains(
+        containerRef.current &&
+        !containerRef.current.contains(
           event.target as Node,
         )
       ) {
@@ -829,52 +490,56 @@ function FilterButton({
       handleOutsideClick,
     );
 
-    return () =>
+    return () => {
       document.removeEventListener(
         "mousedown",
         handleOutsideClick,
       );
+    };
   }, [open]);
 
-  const filteredOptions =
-    useMemo(
-      () =>
-        options.filter((option) =>
-          option
-            .toLowerCase()
-            .includes(
-              search.toLowerCase(),
-            ),
-        ),
-      [options, search],
-    );
+  const filteredOptions = useMemo(() => {
+    const normalizedSearch =
+      search.trim().toLowerCase();
 
-  const grouped = useMemo(() => {
-    const map = new Map<
+    if (!normalizedSearch) {
+      return options;
+    }
+
+    return options.filter((option) =>
+      option
+        .toLowerCase()
+        .includes(normalizedSearch),
+    );
+  }, [options, search]);
+
+  const groupedOptions = useMemo(() => {
+    const groups = new Map<
       string,
       string[]
     >();
 
     for (const option of filteredOptions) {
-      const first =
-        option[0]?.toUpperCase() ??
-        "#";
+      const firstCharacter =
+        option[0]?.toUpperCase() ?? "#";
 
-      const key = /[A-Z]/.test(
-        first,
+      const letter = /[A-Z]/.test(
+        firstCharacter,
       )
-        ? first
+        ? firstCharacter
         : "#";
 
-      if (!map.has(key)) {
-        map.set(key, []);
-      }
+      const existing =
+        groups.get(letter) ?? [];
 
-      map.get(key)!.push(option);
+      groups.set(letter, [
+        ...existing,
+        option,
+      ]);
     }
 
     return Array.from(
-      map.entries(),
+      groups.entries(),
     ).sort(([first], [second]) =>
       first.localeCompare(second),
     );
@@ -882,7 +547,7 @@ function FilterButton({
 
   const availableLetters =
     new Set(
-      grouped.map(
+      groupedOptions.map(
         ([letter]) => letter,
       ),
     );
@@ -900,20 +565,19 @@ function FilterButton({
     ),
   ];
 
-  const toggle = (
+  const toggleOption = (
     value: string,
   ) => {
-    setDraft(
-      draft.includes(value)
-        ? draft.filter(
-            (item) =>
-              item !== value,
+    setDraft((current) =>
+      current.includes(value)
+        ? current.filter(
+            (item) => item !== value,
           )
-        : [...draft, value],
+        : [...current, value],
     );
   };
 
-  const jumpTo = (
+  const jumpToLetter = (
     letter: string,
   ) => {
     const element =
@@ -922,21 +586,33 @@ function FilterButton({
       );
 
     if (
-      element &&
-      listRef.current
+      !element ||
+      !listRef.current
     ) {
-      listRef.current.scrollTop =
-        (
-          element as HTMLElement
-        ).offsetTop -
-        listRef.current.offsetTop;
+      return;
     }
+
+    listRef.current.scrollTop =
+      (
+        element as HTMLElement
+      ).offsetTop -
+      listRef.current.offsetTop;
+  };
+
+  const closeWithoutSaving = () => {
+    setDraft(selected);
+    setOpen(false);
+  };
+
+  const applySelection = () => {
+    onChange(draft);
+    setOpen(false);
   };
 
   return (
     <div
+      ref={containerRef}
       className="relative"
-      ref={ref}
     >
       <button
         type="button"
@@ -1005,17 +681,15 @@ function FilterButton({
               ref={listRef}
               className="flex-1 overflow-y-auto p-2"
             >
-              {grouped.length === 0 && (
+              {groupedOptions.length ===
+                0 && (
                 <p className="p-4 text-center text-xs text-muted-foreground">
                   No matches.
                 </p>
               )}
 
-              {grouped.map(
-                ([
-                  letter,
-                  items,
-                ]) => (
+              {groupedOptions.map(
+                ([letter, items]) => (
                   <div
                     key={letter}
                     data-letter={letter}
@@ -1025,86 +699,74 @@ function FilterButton({
                       {letter}
                     </div>
 
-                    {items.map(
-                      (option) => (
-                        <label
-                          key={
-                            option
-                          }
-                          className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-secondary"
-                        >
-                          <input
-                            type="checkbox"
-                            checked={draft.includes(
+                    {items.map((option) => (
+                      <label
+                        key={option}
+                        className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-secondary"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={draft.includes(
+                            option,
+                          )}
+                          onChange={() =>
+                            toggleOption(
                               option,
-                            )}
-                            onChange={() =>
-                              toggle(
-                                option,
-                              )
-                            }
-                            className="h-4 w-4 accent-[var(--color-primary)]"
-                          />
+                            )
+                          }
+                          className="h-4 w-4 accent-[var(--color-primary)]"
+                        />
 
-                          <span
-                            className={
-                              draft.includes(
-                                option,
-                              )
-                                ? "font-medium"
-                                : ""
-                            }
-                          >
-                            {option}
-                          </span>
-                        </label>
-                      ),
-                    )}
+                        <span
+                          className={
+                            draft.includes(
+                              option,
+                            )
+                              ? "font-medium"
+                              : ""
+                          }
+                        >
+                          {option}
+                        </span>
+                      </label>
+                    ))}
                   </div>
                 ),
               )}
             </div>
 
             <div className="flex flex-col items-center gap-0.5 border-l bg-secondary/40 px-1 py-2 text-[10px] font-semibold text-muted-foreground">
-              {alphabet.map(
-                (letter) => {
-                  const available =
-                    availableLetters.has(
-                      letter,
-                    );
-
-                  return (
-                    <button
-                      key={letter}
-                      type="button"
-                      disabled={
-                        !available
-                      }
-                      onClick={() =>
-                        jumpTo(
-                          letter,
-                        )
-                      }
-                      className={`h-4 w-5 rounded ${
-                        available
-                          ? "text-foreground hover:bg-primary hover:text-primary-foreground"
-                          : "opacity-30"
-                      }`}
-                    >
-                      {letter}
-                    </button>
+              {alphabet.map((letter) => {
+                const available =
+                  availableLetters.has(
+                    letter,
                   );
-                },
-              )}
+
+                return (
+                  <button
+                    key={letter}
+                    type="button"
+                    disabled={!available}
+                    onClick={() =>
+                      jumpToLetter(letter)
+                    }
+                    className={`h-4 w-5 rounded ${
+                      available
+                        ? "text-foreground hover:bg-primary hover:text-primary-foreground"
+                        : "cursor-not-allowed opacity-30"
+                    }`}
+                  >
+                    {letter}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
           <div className="flex items-center justify-end gap-2 border-t p-2">
             <button
               type="button"
-              onClick={() =>
-                setOpen(false)
-              }
+              onClick={closeWithoutSaving}
               className="h-8 rounded-md px-3 text-xs hover:bg-secondary"
             >
               Cancel
@@ -1112,10 +774,7 @@ function FilterButton({
 
             <button
               type="button"
-              onClick={() => {
-                onChange(draft);
-                setOpen(false);
-              }}
+              onClick={applySelection}
               className="h-8 rounded-md bg-primary px-4 text-xs font-semibold text-primary-foreground hover:bg-primary-hover"
             >
               Apply
