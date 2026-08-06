@@ -144,31 +144,16 @@ export const Route =
       ],
 
       links: [
-        {
-          rel: "stylesheet",
-          href: appCss,
-        },
+  { rel: "stylesheet", href: appCss },
 
-        {
-          rel: "icon",
-          href: logoAsset,
-        },
+  { rel: "icon", href: "/favicon.ico" },
 
-        {
-          rel: "shortcut icon",
-          href: logoAsset,
-        },
+  { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon-32x32.png" },
 
-        {
-          rel: "apple-touch-icon",
-          href: logoAsset,
-        },
+  { rel: "icon", type: "image/png", sizes: "16x16", href: "/favicon-16x16.png" },
 
-        {
-          rel: "mask-icon",
-          href: logoAsset,
-        },
-      ],
+  { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
+],
     }),
 
     shellComponent: RootShell,
