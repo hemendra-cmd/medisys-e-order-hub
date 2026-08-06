@@ -73,12 +73,15 @@ function OrdersPage() {
           (item: any) =>
             item.order_id === order.id
         )
-        .map((item: any) => ({
-          brand: item.brand ?? "",
-          name: item.name ?? "",
-          packSize: item.pack_size ?? "",
-          quantity: item.quantity,
-        }));
+       .map((item: any) => ({
+  id: item.id,
+  brand: item.brand ?? "",
+  name: item.name ?? "",
+  packSize: item.pack_size ?? "",
+  quantity: item.quantity ?? 1,
+  availabilityStatus:
+    item.availability_status ?? "pending",
+}));
 
       return {
         id: order.id,
